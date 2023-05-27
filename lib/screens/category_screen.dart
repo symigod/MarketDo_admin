@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +18,6 @@ class CategoryScreen extends StatefulWidget {
 
 final FirebaseStorage storage = FirebaseStorage.instance;
 
-
 class _CategoryScreenState extends State<CategoryScreen> {
   final FirebaseService _service = FirebaseService();
   final TextEditingController _catName = TextEditingController();
@@ -29,11 +27,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
   String? _url;
 
   pickImage() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      allowMultiple: false
-    );
-    if (result!=null){
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.image, allowMultiple: false);
+    if (result != null) {
       setState(() {
         image = result.files.first.bytes;
         fileName = result.files.first.name;
@@ -48,23 +44,23 @@ class _CategoryScreenState extends State<CategoryScreen> {
     EasyLoading.show();
     var ref = storage.ref('categoryImage/$fileName');
     try {
-
-      String? mimiType = mime(basename(fileName!),);
+      String? mimiType = mime(
+        basename(fileName!),
+      );
       var metaData = firebase_storage.SettableMetadata(contentType: mimiType);
-      firebase_storage.TaskSnapshot uploadSnapshot = await ref.putData(image,metaData);
+      firebase_storage.TaskSnapshot uploadSnapshot =
+          await ref.putData(image, metaData);
       String downloadUrRL = await ref.getDownloadURL().then((value) {
-        if(value.isNotEmpty){
-
+        if (value.isNotEmpty) {
           //save data to firestore
           _service.saveCategories(
-            data: {
-              'catName': _catName.text,
-              'image':'$value.png',
-              'active':true
-            },
-            docName: _catName.text,
-            reference: _service.categories
-          ).then((value) {
+              data: {
+                'catName': _catName.text,
+                'image': '$value.png',
+                'active': true
+              },
+              docName: _catName.text,
+              reference: _service.categories).then((value) {
             //after saving, clear all the datas from screen
             clear();
             EasyLoading.dismiss();
@@ -72,8 +68,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
         }
         return value;
       });
-
-
     } on FirebaseException catch (e) {
       clear();
       EasyLoading.dismiss();
@@ -81,10 +75,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }
   }
 
-  clear(){
+  clear() {
     setState(() {
       _catName.clear();
-      image=null;
+      image = null;
     });
   }
 
@@ -92,7 +86,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-
       child: Column(
         children: [
           Container(
@@ -111,7 +104,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ),
           Row(
             children: [
-              const SizedBox(width: 10,),
+              const SizedBox(
+                width: 10,
+              ),
               Column(
                 children: [
                   Container(
@@ -121,54 +116,69 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       color: Colors.grey.shade500,
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(color: Colors.grey.shade800),
-
                     ),
-                    child: Center(child: image == null ? const Text('Category Image') : Image.memory(image),),
-
+                    child: Center(
+                      child: image == null
+                          ? const Text('Category Image')
+                          : Image.memory(image),
+                    ),
                   ),
-                  const SizedBox (height: 10,),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   ElevatedButton(
-                    child: const Text('Upload Image'),
                     onPressed: pickImage,
+                    child: const Text('Upload Image'),
                   )
                 ],
               ),
-              const SizedBox(width: 20,
+              const SizedBox(
+                width: 20,
               ),
               SizedBox(
                 width: 200,
                 child: TextFormField(
-                  validator: (value){
-                    if(value!.isEmpty){
+                  validator: (value) {
+                    if (value!.isEmpty) {
                       return 'Enter Category Name';
                     }
+                    return null;
                   },
                   controller: _catName,
                   decoration: const InputDecoration(
                       label: Text('Enter Category Name'),
-                      contentPadding: EdgeInsets.zero
-                  ),
+                      contentPadding: EdgeInsets.zero),
                 ),
               ),
-              const SizedBox(width: 10,),
+              const SizedBox(
+                width: 10,
+              ),
               TextButton(
                 onPressed: clear,
-                child: Text('Cancel', style: TextStyle(color: Theme.of(context).primaryColor),),
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.white),
-                  side: MaterialStateProperty.all(BorderSide(color: Theme.of(context).primaryColor),),
+                  side: MaterialStateProperty.all(
+                    BorderSide(color: Theme.of(context).primaryColor),
+                  ),
+                ),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: Theme.of(context).primaryColor),
                 ),
               ),
-              const SizedBox(width: 10,),
-              image == null ? Container():ElevatedButton(
-                onPressed: (){
-                  if(_formKey.currentState!.validate()){
-                    saveImageToDb();
-                  }
-                },
-                child: const Text('  Save  '),),
-
-
+              const SizedBox(
+                width: 10,
+              ),
+              image == null
+                  ? Container()
+                  : ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          saveImageToDb();
+                        }
+                      },
+                      child: const Text('  Save  '),
+                    ),
             ],
           ),
           const Divider(
@@ -188,7 +198,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           const SizedBox(
             height: 10,
           ),
-         CategoryListWidget(
+          CategoryListWidget(
             reference: _service.categories,
           )
         ],

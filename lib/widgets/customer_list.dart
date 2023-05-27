@@ -14,131 +14,103 @@ class CustomerList extends StatefulWidget {
 
 class _CustomerListState extends State<CustomerList> {
   late final Customer? customer;
-  List<String> blockedCustomers = []; // List to store blocked customer IDs
+  List<String> blockedCustomers = [];
 
   void _blockCustomer(String customerId) {
     setState(() {
       if (blockedCustomers.contains(customerId)) {
-        blockedCustomers.remove(customerId); // Unblock customer
+        blockedCustomers.remove(customerId);
       } else {
-        blockedCustomers.add(customerId); // Block customer
+        blockedCustomers.add(customerId);
       }
     });
-
-    // Update the approved status of the customer with the given ID
     bool newApprovedStatus = !blockedCustomers.contains(customerId);
-
-    // First, get a reference to the customers collection in Firestore
     CollectionReference customersCollection =
-        FirebaseFirestore.instance.collection('customer');
+        FirebaseFirestore.instance.collection('customers');
 
     customersCollection
         .doc(customerId)
-        .update({'approved': newApprovedStatus})
-        .then((value) {
+        .update({'approved': newApprovedStatus}).then((value) {
       showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Customer ${blockedCustomers.contains(customerId) ? "Blocked" : "Unblocked"}'),
-            content: Text('The registered customer is successfully ${blockedCustomers.contains(customerId) ? "blocked" : "unblocked"}.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                  title: Text(
+                      'Customer ${blockedCustomers.contains(customerId) ? "Blocked" : "Unblocked"}'),
+                  content: Text(
+                      'The registered customer is successfully ${blockedCustomers.contains(customerId) ? "blocked" : "unblocked"}.'),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('OK'))
+                  ]));
+      // ignore: avoid_print, invalid_return_type_for_catch_error
     }).catchError((error) => print('Failed to update customer status: $error'));
   }
 
   @override
   Widget build(BuildContext context) {
-    FirebaseService _service = FirebaseService();
-
-    Widget _customerData({int? flex, String? text, Widget? widget}) {
-      return Expanded(
+    FirebaseService service = FirebaseService();
+    Widget _customerData({int? flex, String? text, Widget? widget}) => Expanded(
         flex: flex!,
         child: Container(
-          height: 66,
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade400)),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: widget ?? Text(text!),
-          ),
-        ),
-      );
-    }
+            height: 66,
+            decoration:
+                BoxDecoration(border: Border.all(color: Colors.grey.shade400)),
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: widget ?? Text(text!))));
 
-    return StreamBuilder<QuerySnapshot>(
-      stream: _service.customer.snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return const Center(child: Text('Something went wrong'));
-        }
+    return StreamBuilder(
+        stream: service.customer.snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const Center(child: Text('Something went wrong'));
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const LinearProgressIndicator();
+          }
+          if (snapshot.data!.size == 0) {
+            return const Center(
+                child: Text('No Customers to show',
+                    style: TextStyle(fontSize: 22)));
+          }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const LinearProgressIndicator();
-        }
+          List<Customer> visibleCustomers = snapshot.data!.docs
+              .map((doc) =>
+                  Customer.fromJson(doc.data() as Map<String, dynamic>))
+              .where((customer) => !blockedCustomers.contains(customer.uid!))
+              .toList();
 
-        if (snapshot.data!.size == 0) {
-          return const Center(
-            child: Text(
-              'No Customers to show',
-              style: TextStyle(fontSize: 22),
-            ),
-          );
-        }
-
-        List<Customer> visibleCustomers = snapshot.data!.docs
-            .map((doc) => Customer.fromJson(doc.data() as Map<String, dynamic>))
-            .where((customer) => !blockedCustomers.contains(customer.uid!))
-            .toList();
-
-        return ListView.builder(
-          shrinkWrap: true,
-          itemCount: visibleCustomers.length,
-          itemBuilder: (context, index) {
-            Customer customer = visibleCustomers[index];
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                _customerData(
-                  flex: 1,
-                  widget: SizedBox(
-                    height: 50,
-                    width: 50,
-                    
-                    child: Image.network(customer.logo!),
-                  ),
-                ),
-                _customerData(flex: 3, text: customer.customerName),
-                _customerData(flex: 2, text: customer.mobile),
-                _customerData(flex: 2, text: customer.email),
-                _customerData(flex: 2, text: customer.address),
-                _customerData(flex: 2, text: customer.landMark),
-                Expanded(
-                  flex: 2,
-                  child: TextButton(
-                    onPressed: () => _blockCustomer(customer.uid!),
-                    child: Text(
-                      blockedCustomers.contains(customer.uid!)
-                          ? 'Unblock'
-                          : 'Block',
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
+          return ListView.builder(
+              shrinkWrap: true,
+              itemCount: visibleCustomers.length,
+              itemBuilder: (context, index) {
+                Customer customer = visibleCustomers[index];
+                return Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      _customerData(
+                          flex: 1,
+                          widget: SizedBox(
+                              height: 50,
+                              width: 50,
+                              child: Image.network(customer.logo!))),
+                      _customerData(flex: 3, text: customer.customerName),
+                      _customerData(flex: 2, text: customer.mobile),
+                      _customerData(flex: 2, text: customer.email),
+                      _customerData(flex: 2, text: customer.address),
+                      _customerData(flex: 2, text: customer.landMark),
+                      Expanded(
+                          flex: 2,
+                          child: TextButton(
+                              onPressed: () => _blockCustomer(customer.uid!),
+                              child: Text(
+                                  blockedCustomers.contains(customer.uid!)
+                                      ? 'Unblock'
+                                      : 'Block')))
+                    ]);
+              });
+        });
   }
 }
 

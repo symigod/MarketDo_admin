@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:marketdo_admin/widgets/vendor_list.dart';
 
-import '../widgets/customer_list.dart';
 import '../widgets/product_list.dart';
 
 class ProductScreen extends StatefulWidget {
@@ -39,9 +37,9 @@ class _ProductScreenState extends State<ProductScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Text(
                 'Registered Products',
                 style: TextStyle(

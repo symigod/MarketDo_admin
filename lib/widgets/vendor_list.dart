@@ -11,7 +11,7 @@ class VendorsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FirebaseService _service = FirebaseService();
+    FirebaseService service = FirebaseService();
 
     Widget _vendorData({int? flex, String? text, Widget? widget}) {
       return Expanded(
@@ -29,7 +29,7 @@ class VendorsList extends StatelessWidget {
     }
 
     return StreamBuilder<QuerySnapshot>(
-        stream: _service.vendor
+        stream: service.vendor
             .where('approved', isEqualTo: ApproveStatus)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -85,10 +85,10 @@ class VendorsList extends StatelessWidget {
                               )),
                               onPressed: () {
                                 EasyLoading.show();
-                                _service.updateData(
+                                service.updateData(
                                     data: {'approved': false},
                                     docName: vendor.uid,
-                                    reference: _service.vendor).then((value) {
+                                    reference: service.vendor).then((value) {
                                   EasyLoading.dismiss();
                                 });
                               },
@@ -99,10 +99,10 @@ class VendorsList extends StatelessWidget {
                                       style: TextStyle(color: Colors.white))),
                               onPressed: () {
                                 EasyLoading.show();
-                                _service.updateData(
+                                service.updateData(
                                     data: {'approved': true},
                                     docName: vendor.uid,
-                                    reference: _service.vendor).then((value) {
+                                    reference: service.vendor).then((value) {
                                   EasyLoading.dismiss();
                                 });
                               },

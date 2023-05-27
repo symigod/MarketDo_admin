@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:marketdo_admin/firebase_services.dart';
-import 'package:marketdo_admin/model/orders_model.dart';
 
 class DashboardScreen extends StatefulWidget {
   static const String id = 'Dashboard';
@@ -17,239 +16,151 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget analyticWidget({required String title, required String value}) {
-      return Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Container(
-          height: 190,
-          width: 270,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.blueGrey),
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.black45,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-                Center(
-                    child: FittedBox(
-                  child: Text(
-                    value,
-                    style: const TextStyle(
-                        fontSize: 50,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
-                  ),
-                )),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
+    Widget analyticWidget({required String title, required String value}) =>
+        Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: SizedBox(
+                height: 200,
+                width: 275,
+                child: Card(
+                    color: Colors.black45,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Text(title,
+                                        style: const TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold))),
+                                const Divider(color: Colors.white)
+                              ]),
+                          Center(
+                              child: FittedBox(
+                                  child: Text(value,
+                                      style: const TextStyle(
+                                          fontSize: 18, color: Colors.white)))),
+                          Container()
+                        ]))));
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Wrap(
-          spacing: 15,
-          runSpacing: 20,
-          children: [
-            //VENDORS TOTAL
-            StreamBuilder<QuerySnapshot>(
-              stream: _services.vendor.snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return const Text('Something went wrong');
+    Widget loadingWidget({required String title}) => Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: SizedBox(
+            height: 200,
+            width: 275,
+            child: Card(
+                color: Colors.black45,
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Text(title,
+                                    style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold))),
+                            const Divider(color: Colors.white)
+                          ]),
+                      const Center(
+                          child:
+                              CircularProgressIndicator(color: Colors.white)),
+                      Container()
+                    ]))));
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Wrap(spacing: 15, runSpacing: 20, children: [
+        //VENDORS TOTAL
+        StreamBuilder(
+            stream: _services.vendor.snapshots(),
+            builder: (context, snapshot) => snapshot.hasError
+                ? Center(child: Text('Error: ${snapshot.error}'))
+                : snapshot.connectionState == ConnectionState.waiting
+                    ? loadingWidget(title: 'Vendors')
+                    : snapshot.hasData
+                        ? analyticWidget(
+                            title: "Vendors",
+                            value: snapshot.data!.size.toString())
+                        : const SizedBox()),
+        //CUSTOMERS TOTAL
+        StreamBuilder(
+            stream: _services.customer.snapshots(),
+            builder: (context, snapshot) => snapshot.hasError
+                ? Center(child: Text('Error: ${snapshot.error}'))
+                : snapshot.connectionState == ConnectionState.waiting
+                    ? loadingWidget(title: 'Customers')
+                    : snapshot.hasData
+                        ? analyticWidget(
+                            title: "Customers",
+                            value: snapshot.data!.size.toString())
+                        : const SizedBox()),
+        //PRODUCTS TOTAL
+        StreamBuilder(
+            stream: _services.product.snapshots(),
+            builder: (context, snapshot) => snapshot.hasError
+                ? Center(child: Text('Error: ${snapshot.error}'))
+                : snapshot.connectionState == ConnectionState.waiting
+                    ? loadingWidget(title: 'Products')
+                    : snapshot.hasData
+                        ? analyticWidget(
+                            title: "Products",
+                            value: snapshot.data!.size.toString())
+                        : const SizedBox()),
+        //TOTAL CATEGORIES
+        StreamBuilder(
+            stream: _services.categories.snapshots(),
+            builder: (context, snapshot) => snapshot.hasError
+                ? Center(child: Text('Error: ${snapshot.error}'))
+                : snapshot.connectionState == ConnectionState.waiting
+                    ? loadingWidget(title: 'Categories')
+                    : snapshot.hasData
+                        ? analyticWidget(
+                            title: "Categories",
+                            value: snapshot.data!.size.toString())
+                        : const SizedBox()),
+        // TOP SALES
+        StreamBuilder(
+            stream: FirebaseFirestore.instance.collection('orders').snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const Text('Something went wrong');
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return loadingWidget(title: 'Top Sales');
+              }
+              if (snapshot.hasData) {
+                final orders = snapshot.data!.docs;
+                Map<String, int> vendorCountMap = {};
+                for (var order in orders) {
+                  final vendorName = order['vendorName'] as String;
+                  vendorCountMap[vendorName] =
+                      (vendorCountMap[vendorName] ?? 0) + 1;
                 }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Container(
-                        height: 100,
-                        width: 200,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blueGrey),
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.blue,
-                        ),
-                        child: const Center(
-                          child: CircularProgressIndicator(color: Colors.white),
-                        )),
-                  );
-                }
-                if (snapshot.hasData) {
-                  return analyticWidget(
-                      title: "Vendor", value: snapshot.data!.size.toString());
-                }
-                return const SizedBox();
-              },
-            ),
-            //CUSTOMERS TOTAL
-            StreamBuilder<QuerySnapshot>(
-              stream: _services.customer.snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return const Text('Something went wrong');
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Container(
-                        height: 100,
-                        width: 200,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blueGrey),
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.blue,
-                        ),
-                        child: const Center(
-                          child: CircularProgressIndicator(color: Colors.white),
-                        )),
-                  );
-                }
-                if (snapshot.hasData) {
-                  return analyticWidget(
-                      title: "Customers",
-                      value: snapshot.data!.size.toString());
-                }
-                return const SizedBox();
-              },
-            ),
-            //PRODUCTS TOTAL
-            StreamBuilder<QuerySnapshot>(
-              stream: _services.product.snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return const Text('Something went wrong');
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Container(
-                        height: 100,
-                        width: 200,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blueGrey),
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.blue,
-                        ),
-                        child: const Center(
-                          child: CircularProgressIndicator(color: Colors.white),
-                        )),
-                  );
-                }
-                if (snapshot.hasData) {
-                  return analyticWidget(
-                      title: "Products", value: snapshot.data!.size.toString());
-                }
-                return const SizedBox();
-              },
-            ),
-            //TOTAL CATEGORIES
-            StreamBuilder<QuerySnapshot>(
-              stream: _services.categories.snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return const Text('Something went wrong');
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Container(
-                        height: 100,
-                        width: 200,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blueGrey),
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.blue,
-                        ),
-                        child: const Center(
-                          child: CircularProgressIndicator(color: Colors.white),
-                        )),
-                  );
-                }
-                if (snapshot.hasData) {
-                  return analyticWidget(
-                      title: "Categories",
-                      value: snapshot.data!.size.toString());
-                }
-                return const SizedBox();
-              },
-            ),
-            // TOP SALES
-            StreamBuilder(
-              stream:
-                  FirebaseFirestore.instance.collection('orders').snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const Text('Something went wrong');
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Container(
-                        height: 100,
-                        width: 200,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blueGrey),
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.blue,
-                        ),
-                        child: const Center(
-                          child: CircularProgressIndicator(color: Colors.white),
-                        )),
-                  );
-                }
-                if (snapshot.hasData) {
-                  final orders = snapshot.data!.docs;
-                  Map<String, int> vendorCountMap =
-                      {}; // Map to store vendor name and occurrence count
-
-                  for (var order in orders) {
-                    final vendorName = order['vendorName'] as String;
-                    vendorCountMap[vendorName] =
-                        (vendorCountMap[vendorName] ?? 0) + 1;
+                String mostOccurringVendor = '';
+                int maxOccurrences = 0;
+                for (var entry in vendorCountMap.entries) {
+                  if (entry.value > maxOccurrences) {
+                    maxOccurrences = entry.value;
+                    mostOccurringVendor = entry.key;
                   }
-
-                  // Find the vendor name with the maximum occurrence count
-                  String mostOccurringVendor = '';
-                  int maxOccurrences = 0;
-
-                  for (var entry in vendorCountMap.entries) {
-                    if (entry.value > maxOccurrences) {
-                      maxOccurrences = entry.value;
-                      mostOccurringVendor = entry.key;
-                    }
-                  }
-
-                  return analyticWidget(
-                      title: "Top Sales",
-                      value:
-                          '$mostOccurringVendor\n$maxOccurrences orders sold');
                 }
-                return const SizedBox();
-              },
-            ),
-          ],
-        ),
-      ],
-    );
+                return analyticWidget(
+                    title: "Top Sales",
+                    value: '$mostOccurringVendor\n$maxOccurrences orders sold');
+              }
+              return const SizedBox();
+            })
+      ])
+    ]);
   }
 }

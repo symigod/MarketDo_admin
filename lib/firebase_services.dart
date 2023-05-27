@@ -9,23 +9,21 @@ class FirebaseService {
       FirebaseFirestore.instance.collection('subCategories');
   CollectionReference vendor = FirebaseFirestore.instance.collection('vendor');
   CollectionReference customer =
-      FirebaseFirestore.instance.collection('customer');
+      FirebaseFirestore.instance.collection('customers');
   CollectionReference product =
       FirebaseFirestore.instance.collection('product');
 
   var users;
 
   Future<void> saveCategories(
-      {CollectionReference? reference,
-      Map<String, dynamic>? data,
-      String? docName}) async {
-    return reference!.doc(docName).set(data);
-  }
+          {CollectionReference? reference,
+          Map<String, dynamic>? data,
+          String? docName}) async =>
+      reference!.doc(docName).set(data);
 
   Future<void> updateData(
-      {CollectionReference? reference,
-      Map<String, dynamic>? data,
-      String? docName}) async {
-    return reference!.doc(docName).update(data!);
-  }
+          {CollectionReference? reference,
+          Map<String, dynamic>? data,
+          String? docName}) async =>
+      reference!.doc(docName).update(data!);
 }

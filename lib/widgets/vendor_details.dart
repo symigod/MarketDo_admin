@@ -4,13 +4,13 @@ import 'package:marketdo_admin/model/vendor_model.dart';
 class VendorDetailsCard extends StatelessWidget {
   final Vendor? vendor;
 
-  const VendorDetailsCard({required this.vendor});
+  const VendorDetailsCard({super.key, required this.vendor});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(vendor!.businessName!),
-      content: Container(
+      content: SizedBox(
         height: 500,
         width: 600,
         child: SingleChildScrollView(

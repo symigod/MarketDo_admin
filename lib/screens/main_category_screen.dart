@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:marketdo_admin/firebase_services.dart';
-import 'package:marketdo_admin/widgets/categories_list_widget.dart';
 
 import '../widgets/main_categories_list_widget.dart';
 
@@ -97,6 +96,7 @@ class _MainCategoryScreenState extends State<MainCategoryScreen> {
                   if(value!.isEmpty){
                     return 'Enter Main Category Name';
                   }
+                  return null;
                 },
                 controller: _mainCat,
                 decoration: const InputDecoration(
@@ -110,11 +110,11 @@ class _MainCategoryScreenState extends State<MainCategoryScreen> {
               children: [
                 TextButton(
                   onPressed: clear,
-                  child: Text('Cancel', style: TextStyle(color: Theme.of(context).primaryColor),),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.white),
                     side: MaterialStateProperty.all(BorderSide(color: Theme.of(context).primaryColor),),
                   ),
+                  child: Text('Cancel', style: TextStyle(color: Theme.of(context).primaryColor),),
                 ),
                 const SizedBox(width: 10,),
                 ElevatedButton(

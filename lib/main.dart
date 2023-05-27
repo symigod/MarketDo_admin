@@ -13,7 +13,6 @@ import 'package:marketdo_admin/screens/product_screen.dart';
 import 'package:marketdo_admin/screens/sub_category_screen.dart';
 import 'package:marketdo_admin/screens/vendor_screen.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -24,29 +23,20 @@ void main() async {
           storageBucket: "marketdoapp.appspot.com",
           messagingSenderId: "780102967000",
           appId: "1:780102967000:web:355fc279e1b33653e901ad",
-          measurementId: "G-T7V8YN5HBN"
-      ),
-  );
+          measurementId: "G-T7V8YN5HBN"));
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-
-  //this widget is the root of our project
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context) => MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'MarketDo Admin',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
+      theme: ThemeData(primarySwatch: Colors.green),
       home: const SideMenu(),
-      builder: EasyLoading.init(),
-    );
-  }
+      builder: EasyLoading.init());
 }
 
 class SideMenu extends StatefulWidget {
@@ -58,136 +48,87 @@ class SideMenu extends StatefulWidget {
 }
 
 class _SideMenuState extends State<SideMenu> {
+  Widget _selectedScreen = const DashboardScreen();
 
-  Widget _selectedScreen = DashboardScreen();
-
-  screenSelector(item){
-    switch(item.route){
-      case DashboardScreen.id :
-        setState(() {
-          _selectedScreen = DashboardScreen();
-        });
+  screenSelector(item) {
+    switch (item.route) {
+      case DashboardScreen.id:
+        setState(() => _selectedScreen = const DashboardScreen());
         break;
-      case CategoryScreen.id :
-        setState(() {
-          _selectedScreen = const CategoryScreen();
-        });
+      case CategoryScreen.id:
+        setState(() => _selectedScreen = const CategoryScreen());
         break;
-      case MainCategoryScreen.id :
-        setState(() {
-          _selectedScreen = const MainCategoryScreen();
-        });
+      case MainCategoryScreen.id:
+        setState(() => _selectedScreen = const MainCategoryScreen());
         break;
-      case SubCategoryScreen.id :
-        setState(() {
-          _selectedScreen = const SubCategoryScreen();
-        });
+      case SubCategoryScreen.id:
+        setState(() => _selectedScreen = const SubCategoryScreen());
         break;
-      case VendorScreen.id :
-        setState(() {
-          _selectedScreen = const VendorScreen();
-        });
+      case VendorScreen.id:
+        setState(() => _selectedScreen = const VendorScreen());
         break;
-      case CustomerScreen.id :
-        setState(() {
-          _selectedScreen = const CustomerScreen();
-        });
+      case CustomerScreen.id:
+        setState(() => _selectedScreen = const CustomerScreen());
         break;
-      case ProductScreen.id :
-        setState(() {
-          _selectedScreen = const ProductScreen();
-        });
+      case ProductScreen.id:
+        setState(() => _selectedScreen = const ProductScreen());
         break;
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return AdminScaffold(
+  Widget build(BuildContext context) => AdminScaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('MarketDo',style: TextStyle(letterSpacing: 1),),
-      ),
+          title: const Text('MarketDo', style: TextStyle(letterSpacing: 1))),
       sideBar: SideBar(
-        items: const [
-          AdminMenuItem(
-            title: 'Dashboard',
-            route: DashboardScreen.id,
-            icon: Icons.dashboard,
-          ),
-          AdminMenuItem(
-            title: 'Categories',
-            icon: IconlyLight.category,
-            children: [
-              AdminMenuItem(
-                title: 'Category',
-                route: CategoryScreen.id,
-              ),
-              AdminMenuItem(
-                title: 'Main Category',
-                route: MainCategoryScreen.id,
-              ),
-              AdminMenuItem(
-                title: 'Sub Category',
-                route: SubCategoryScreen.id,
-              ),
-            ],
-          ),
-          AdminMenuItem(
-            title: 'Vendors',
-            route: VendorScreen.id,
-            icon: Icons.group_outlined,
-          ),
-           AdminMenuItem(
-            title: 'Customers',
-            route: CustomerScreen.id,
-            icon: Icons.groups_3_outlined,
-          ),
-             AdminMenuItem(
-            title: 'Products',
-            route: ProductScreen.id,
-            icon: Icons.shopping_bag_outlined
-          ),
-        ],
-        
-        selectedRoute: SideMenu.id,
-        onSelected: (item) {
-          screenSelector(item);
+          items: const [
+            AdminMenuItem(
+                title: 'Dashboard',
+                route: DashboardScreen.id,
+                icon: Icons.dashboard),
+            AdminMenuItem(
+                title: 'Categories',
+                icon: IconlyLight.category,
+                children: [
+                  AdminMenuItem(title: 'Category', route: CategoryScreen.id),
+                  AdminMenuItem(
+                      title: 'Main Category', route: MainCategoryScreen.id),
+                  AdminMenuItem(
+                      title: 'Sub Category', route: SubCategoryScreen.id)
+                ]),
+            AdminMenuItem(
+                title: 'Vendors',
+                route: VendorScreen.id,
+                icon: Icons.group_outlined),
+            AdminMenuItem(
+                title: 'Customers',
+                route: CustomerScreen.id,
+                icon: Icons.groups_3_outlined),
+            AdminMenuItem(
+                title: 'Products',
+                route: ProductScreen.id,
+                icon: Icons.shopping_bag_outlined)
+          ],
+          selectedRoute: SideMenu.id,
+          onSelected: (item) => screenSelector(item),
           // if (item.route != null) {
           //   Navigator.of(context).pushNamed(item.route!);
           // }
-        },
-        
-        header: Container(
-          height: 50,
-          width: double.infinity,
-          color: const Color(0xff444444),
-          child: const Center(
-            child: Text(
-              'Menu',
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-        footer: Container(
-          height: 50,
-          width: double.infinity,
-          color: const Color(0xff444444),
-          child: Center(
-            child: Text(
-              DateTimeFormat.format(DateTime.now(), format: AmericanDateFormats.dayOfWeek),
-              style: const TextStyle(
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: _selectedScreen,
-      ),
-    );
-  }
+          header: Container(
+              height: 50,
+              width: double.infinity,
+              color: const Color(0xff444444),
+              child: const Center(
+                  child: Text('Menu', style: TextStyle(color: Colors.white)))),
+          footer: Container(
+              height: 50,
+              width: double.infinity,
+              color: const Color(0xff444444),
+              child: Center(
+                  child: Text(
+                      DateTimeFormat.format(DateTime.now(),
+                          format: AmericanDateFormats.dayOfWeek),
+                      style: const TextStyle(color: Colors.white))))),
+      body: SingleChildScrollView(child: _selectedScreen));
 }

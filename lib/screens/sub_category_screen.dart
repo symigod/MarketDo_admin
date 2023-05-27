@@ -160,8 +160,8 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
                     height: 10,
                   ),
                   ElevatedButton(
-                    child: const Text('Upload Image'),
                     onPressed: pickImage,
+                    child: const Text('Upload Image'),
                   )
                 ],
               ),
@@ -189,6 +189,7 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
                         if (value!.isEmpty) {
                           return 'Enter Sub Category Name';
                         }
+                        return null;
                       },
                       controller: _subCatName,
                       decoration: const InputDecoration(
@@ -203,17 +204,17 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
                     children: [
                       TextButton(
                         onPressed: clear,
-                        child: Text(
-                          'Cancel',
-                          style:
-                              TextStyle(color: Theme.of(context).primaryColor),
-                        ),
                         style: ButtonStyle(
                           backgroundColor:
                               MaterialStateProperty.all(Colors.white),
                           side: MaterialStateProperty.all(
                             BorderSide(color: Theme.of(context).primaryColor),
                           ),
+                        ),
+                        child: Text(
+                          'Cancel',
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
                         ),
                       ),
                       const SizedBox(

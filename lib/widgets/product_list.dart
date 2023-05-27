@@ -9,7 +9,7 @@ final bool? ApproveStatus;
 
   @override
   Widget build(BuildContext context) {
-    FirebaseService _service = FirebaseService();
+    FirebaseService service = FirebaseService();
 
     Widget _productData({int? flex,String? text, Widget? widget}){
       return Expanded(
@@ -27,7 +27,7 @@ final bool? ApproveStatus;
       );
     }
     return StreamBuilder<QuerySnapshot>(
-        stream: _service.product.snapshots(),
+        stream: service.product.snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot)
     {
       if (snapshot.hasError) {
