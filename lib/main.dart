@@ -13,6 +13,20 @@ import 'package:marketdo_admin/screens/product_screen.dart';
 import 'package:marketdo_admin/screens/sub_category_screen.dart';
 import 'package:marketdo_admin/screens/vendor_screen.dart';
 
+int marketDoGreen = 0xFF1B5E20;
+MaterialColor _marketDoGreen = MaterialColor(marketDoGreen, {
+  50: const Color(0xFFE8F5E9),
+  100: const Color(0xFFC8E6C9),
+  200: const Color(0xFFA5D6A7),
+  300: const Color(0xFF81C784),
+  400: const Color(0xFF66BB6A),
+  500: Color(marketDoGreen),
+  600: const Color(0xFF43A047),
+  700: const Color(0xFF388E3C),
+  800: const Color(0xFF2E7D32),
+  900: const Color(0xFF1B5E20)
+});
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -34,7 +48,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'MarketDo Admin',
-      theme: ThemeData(primarySwatch: Colors.green),
+      theme: ThemeData(primarySwatch: _marketDoGreen, fontFamily: 'Lato'),
       home: const SideMenu(),
       builder: EasyLoading.init());
 }
@@ -80,7 +94,8 @@ class _SideMenuState extends State<SideMenu> {
   Widget build(BuildContext context) => AdminScaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-          title: const Text('MarketDo', style: TextStyle(letterSpacing: 1))),
+          title:
+              const Text('MarketDo Admin', style: TextStyle(letterSpacing: 1))),
       sideBar: SideBar(
           items: const [
             AdminMenuItem(
