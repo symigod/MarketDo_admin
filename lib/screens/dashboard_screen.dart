@@ -129,37 +129,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             value: snapshot.data!.size.toString())
                         : const SizedBox()),
         // TOP SALES
-        StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('orders').snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return const Text('Something went wrong');
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return loadingWidget(title: 'Top Sales');
-              }
-              if (snapshot.hasData) {
-                final orders = snapshot.data!.docs;
-                Map<String, int> vendorCountMap = {};
-                for (var order in orders) {
-                  final vendorName = order['vendorName'] as String;
-                  vendorCountMap[vendorName] =
-                      (vendorCountMap[vendorName] ?? 0) + 1;
-                }
-                String mostOccurringVendor = '';
-                int maxOccurrences = 0;
-                for (var entry in vendorCountMap.entries) {
-                  if (entry.value > maxOccurrences) {
-                    maxOccurrences = entry.value;
-                    mostOccurringVendor = entry.key;
-                  }
-                }
-                return analyticWidget(
-                    title: "Top Sales",
-                    value: '$mostOccurringVendor\n$maxOccurrences orders sold');
-              }
-              return const SizedBox();
-            })
+        // StreamBuilder(
+        //     stream: FirebaseFirestore.instance.collection('orders').snapshots(),
+        //     builder: (context, snapshot) {
+        //       if (snapshot.hasError) {
+        //         return const Text('Something went wrong');
+        //       }
+        //       if (snapshot.connectionState == ConnectionState.waiting) {
+        //         return loadingWidget(title: 'Top Sales');
+        //       }
+        //       if (snapshot.hasData) {
+        //         final orders = snapshot.data!.docs;
+        //         Map<String, int> vendorCountMap = {};
+        //         for (var order in orders) {
+        //           final vendorName = order['vendorName'] as String;
+        //           vendorCountMap[vendorName] =
+        //               (vendorCountMap[vendorName] ?? 0) + 1;
+        //         }
+        //         String mostOccurringVendor = '';
+        //         int maxOccurrences = 0;
+        //         for (var entry in vendorCountMap.entries) {
+        //           if (entry.value > maxOccurrences) {
+        //             maxOccurrences = entry.value;
+        //             mostOccurringVendor = entry.key;
+        //           }
+        //         }
+        //         return analyticWidget(
+        //             title: "Top Sales",
+        //             value: '$mostOccurringVendor\n$maxOccurrences orders sold');
+        //       }
+        //       return const SizedBox();
+        //     })
       ])
     ]);
   }
