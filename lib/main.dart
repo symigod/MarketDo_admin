@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_admin_scaffold/admin_scaffold.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:marketdo_admin/screens/category_screen.dart';
 import 'package:marketdo_admin/screens/customer_screen.dart';
 import 'package:marketdo_admin/screens/dashboard_screen.dart';
@@ -102,28 +101,22 @@ class _SideMenuState extends State<SideMenu> {
                 title: 'Dashboard',
                 route: DashboardScreen.id,
                 icon: Icons.dashboard),
+            AdminMenuItem(title: 'Categories', icon: Icons.category, children: [
+              AdminMenuItem(title: 'Category', route: CategoryScreen.id),
+              AdminMenuItem(
+                  title: 'Main Category', route: MainCategoryScreen.id),
+              AdminMenuItem(title: 'Sub Category', route: SubCategoryScreen.id)
+            ]),
             AdminMenuItem(
-                title: 'Categories',
-                icon: IconlyLight.category,
-                children: [
-                  AdminMenuItem(title: 'Category', route: CategoryScreen.id),
-                  AdminMenuItem(
-                      title: 'Main Category', route: MainCategoryScreen.id),
-                  AdminMenuItem(
-                      title: 'Sub Category', route: SubCategoryScreen.id)
-                ]),
-            AdminMenuItem(
-                title: 'Vendors',
-                route: VendorScreen.id,
-                icon: Icons.group_outlined),
+                title: 'Vendors', route: VendorScreen.id, icon: Icons.store),
             AdminMenuItem(
                 title: 'Customers',
                 route: CustomerScreen.id,
-                icon: Icons.groups_3_outlined),
+                icon: Icons.people),
             AdminMenuItem(
                 title: 'Products',
                 route: ProductScreen.id,
-                icon: Icons.shopping_bag_outlined)
+                icon: Icons.shopping_cart)
           ],
           selectedRoute: SideMenu.id,
           onSelected: (item) => screenSelector(item),

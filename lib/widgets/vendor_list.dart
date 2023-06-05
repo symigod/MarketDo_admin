@@ -6,8 +6,8 @@ import 'package:marketdo_admin/widgets/dialogs.dart';
 import 'package:marketdo_admin/widgets/vendor_details.dart';
 
 class VendorsList extends StatelessWidget {
-  final bool? ApproveStatus;
-  const VendorsList({this.ApproveStatus, Key? key}) : super(key: key);
+  final bool? isApproved;
+  const VendorsList({this.isApproved, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class VendorsList extends StatelessWidget {
     return StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('vendor')
-            .where('isApproved', isEqualTo: ApproveStatus)
+            .where('isApproved', isEqualTo: isApproved)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -47,7 +47,10 @@ class VendorsList extends StatelessWidget {
                             widget: SizedBox(
                                 height: 50,
                                 width: 50,
-                                child: Image.network(vendor[index]['logo']))),
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child:
+                                        Image.network(vendor[index]['logo'])))),
                         _vendorData(
                             flex: 3, text: vendor[index]['businessName']),
                         _vendorData(flex: 2, text: vendor[index]['city']),

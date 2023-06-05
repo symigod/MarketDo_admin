@@ -77,6 +77,6 @@ class _VendorScreenState extends State<VendorScreen> {
               _rowHeader(flex: 1, text: 'ACTION'),
               _rowHeader(flex: 1, text: 'VIEW MORE')
             ]),
-            VendorsList(ApproveStatus: selectedButton)
+            VendorsList(isApproved: selectedButton)
           ]));
 }

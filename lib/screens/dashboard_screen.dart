@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:marketdo_admin/firebase_services.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class DashboardScreen extends StatefulWidget {
   static const String id = 'Dashboard';
@@ -12,35 +14,60 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final FirebaseService _services = FirebaseService();
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  late List<ChartData> chartData = [];
+  late int customers = 0;
+  late int vendors = 0;
+
+  Future<void> fetchData() async {
+    final CollectionReference customersCollection =
+        firestore.collection('customers');
+    final CollectionReference vendorsCollection =
+        firestore.collection('vendor');
+
+    final customersQuerySnapshot = await customersCollection.get();
+    final vendorsQuerySnapshot = await vendorsCollection.get();
+
+    final int customersLength = customersQuerySnapshot.docs.length;
+    final int vendorsLength = vendorsQuerySnapshot.docs.length;
+
+    setState(() => chartData = [
+          ChartData('Customers', customersLength),
+          ChartData('Vendors', vendorsLength)
+        ]);
+  }
 
   @override
-  Widget build(BuildContext context) =>
-      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Wrap(spacing: 15, runSpacing: 20, children: [
-          //VENDORS TOTAL
-          StreamBuilder(
-              stream: _services.vendor.snapshots(),
-              builder: (context, snapshot) => snapshot.hasError
-                  ? Center(child: Text('Error: ${snapshot.error}'))
-                  : snapshot.connectionState == ConnectionState.waiting
-                      ? loadingWidget(title: 'Vendors')
-                      : snapshot.hasData
-                          ? analyticWidget(
-                              title: "Vendors",
-                              value: snapshot.data!.size.toString())
-                          : const SizedBox()),
-          //CUSTOMERS TOTAL
-          StreamBuilder(
-              stream: _services.customer.snapshots(),
-              builder: (context, snapshot) => snapshot.hasError
-                  ? Center(child: Text('Error: ${snapshot.error}'))
-                  : snapshot.connectionState == ConnectionState.waiting
-                      ? loadingWidget(title: 'Customers')
-                      : snapshot.hasData
-                          ? analyticWidget(
-                              title: "Customers",
-                              value: snapshot.data!.size.toString())
-                          : const SizedBox()),
+  void initState() {
+    fetchData();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(10),
+        child: Wrap(spacing: 15, runSpacing: 20, children: [
+          SizedBox(
+              width: MediaQuery.of(context).size.width / 3,
+              child: Card(
+                  elevation: 10,
+                  shadowColor: Colors.green.shade900,
+                  shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 2, color: Colors.green.shade900),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Center(
+                      child: SfCircularChart(
+                          palette: const [Colors.blue, Colors.green],
+                          legend: Legend(isVisible: true),
+                          tooltipBehavior: TooltipBehavior(
+                              enable: true,
+                              textStyle: const TextStyle(fontFamily: 'Lato')),
+                          series: <CircularSeries<ChartData, String>>[
+                            DoughnutSeries<ChartData, String>(
+                                dataSource: chartData,
+                                xValueMapper: (ChartData data, _) => data.x,
+                                yValueMapper: (ChartData data, _) => data.y)
+                          ])))),
           //PRODUCTS TOTAL
           StreamBuilder(
               stream: _services.product.snapshots(),
@@ -97,8 +124,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           //       }
           //       return const SizedBox();
           //     })
-        ])
-      ]);
+        ]),
+      );
 
   Widget analyticWidget({required String title, required String value}) =>
       Padding(
@@ -161,4 +188,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: CircularProgressIndicator(color: Colors.white)),
                     Container()
                   ]))));
+}
+
+class ChartData {
+  final String x;
+  final int y;
+
+  ChartData(this.x, this.y);
+
+  Map<String, dynamic> getChartData() {
+    return {'x': x, 'y': y};
+  }
 }

@@ -46,6 +46,7 @@ dependencies:
   mime_type: ^1.0.0
   path: ^1.8.2
   intl: ^0.18.1
+  syncfusion_flutter_charts: ^21.2.8
 
 dev_dependencies:
   flutter_test:
