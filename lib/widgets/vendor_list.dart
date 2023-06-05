@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:marketdo_admin/widgets/api_widgets.dart';
 import 'package:marketdo_admin/widgets/dialogs.dart';
-import 'package:marketdo_admin/widgets/stream_widgets.dart';
 import 'package:marketdo_admin/widgets/vendor_details.dart';
 
 class VendorsList extends StatelessWidget {
@@ -28,13 +28,13 @@ class VendorsList extends StatelessWidget {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return streamErrorWidget(snapshot.error.toString());
+            return errorWidget(snapshot.error.toString());
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return streamLoadingWidget();
+            return loadingWidget();
           }
           if (snapshot.data!.docs.isNotEmpty) {
-            final List<DocumentSnapshot> vendor = snapshot.data!.docs;
+            var vendor = snapshot.data!.docs;
             return ListView.builder(
                 shrinkWrap: true,
                 itemCount: vendor.length,
@@ -113,7 +113,7 @@ class VendorsList extends StatelessWidget {
                       ]);
                 });
           }
-          return streamEmptyWidget('NO RECORD FOUND');
+          return emptyWidget('NO RECORD FOUND');
         });
   }
 }

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:marketdo_admin/firebase_services.dart';
-import '../model/customer_model.dart';
+import 'package:marketdo_admin/widgets/api_widgets.dart';
 
 class CustomerList extends StatefulWidget {
   final bool? ApproveStatus;
@@ -13,24 +12,18 @@ class CustomerList extends StatefulWidget {
 }
 
 class _CustomerListState extends State<CustomerList> {
-  late final Customer? customer;
   List<String> blockedCustomers = [];
 
   void _blockCustomer(String customerId) {
-    setState(() {
-      if (blockedCustomers.contains(customerId)) {
-        blockedCustomers.remove(customerId);
-      } else {
-        blockedCustomers.add(customerId);
-      }
-    });
+    setState(() => blockedCustomers.contains(customerId)
+        ? blockedCustomers.remove(customerId)
+        : blockedCustomers.add(customerId));
     bool newApprovedStatus = !blockedCustomers.contains(customerId);
-    CollectionReference customersCollection =
-        FirebaseFirestore.instance.collection('customers');
 
-    customersCollection
+    FirebaseFirestore.instance
+        .collection('customers')
         .doc(customerId)
-        .update({'approved': newApprovedStatus}).then((value) {
+        .update({'isApproved': newApprovedStatus}).then((value) {
       showDialog(
           context: context,
           builder: (BuildContext context) => AlertDialog(
@@ -49,7 +42,6 @@ class _CustomerListState extends State<CustomerList> {
 
   @override
   Widget build(BuildContext context) {
-    FirebaseService service = FirebaseService();
     Widget _customerData({int? flex, String? text, Widget? widget}) => Expanded(
         flex: flex!,
         child: Container(
@@ -61,31 +53,23 @@ class _CustomerListState extends State<CustomerList> {
                 child: widget ?? Text(text!))));
 
     return StreamBuilder(
-        stream: service.customer.snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(child: Text('Something went wrong'));
+        stream: FirebaseFirestore.instance.collection('customers').snapshots(),
+        builder: (context, cs) {
+          if (cs.hasError) {
+            return errorWidget(cs.error.toString());
           }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LinearProgressIndicator();
+          if (cs.connectionState == ConnectionState.waiting) {
+            return loadingWidget();
           }
-          if (snapshot.data!.size == 0) {
-            return const Center(
-                child: Text('No Customers to show',
-                    style: TextStyle(fontSize: 22)));
+          if (cs.data!.size == 0) {
+            return emptyWidget('NO RECORD FOUND');
           }
-
-          List<Customer> visibleCustomers = snapshot.data!.docs
-              .map((doc) =>
-                  Customer.fromJson(doc.data() as Map<String, dynamic>))
-              .where((customer) => !blockedCustomers.contains(customer.uid!))
-              .toList();
-
+          var customers = cs.data!.docs;
           return ListView.builder(
               shrinkWrap: true,
-              itemCount: visibleCustomers.length,
+              itemCount: customers.length,
               itemBuilder: (context, index) {
-                Customer customer = visibleCustomers[index];
+                var customer = customers[index];
                 return Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -94,20 +78,24 @@ class _CustomerListState extends State<CustomerList> {
                           widget: SizedBox(
                               height: 50,
                               width: 50,
-                              child: Image.network(customer.logo!))),
-                      _customerData(flex: 3, text: customer.customerName),
-                      _customerData(flex: 2, text: customer.mobile),
-                      _customerData(flex: 2, text: customer.email),
-                      _customerData(flex: 2, text: customer.address),
-                      _customerData(flex: 2, text: customer.landMark),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.network(customer['logo'],
+                                      fit: BoxFit.cover)))),
+                      _customerData(flex: 3, text: customer['name']),
+                      _customerData(flex: 2, text: customer['mobile']),
+                      _customerData(flex: 2, text: customer['email']),
+                      _customerData(flex: 2, text: customer['address']),
+                      _customerData(flex: 2, text: customer['landMark']),
                       Expanded(
                           flex: 2,
                           child: TextButton(
-                              onPressed: () => _blockCustomer(customer.uid!),
-                              child: Text(
-                                  blockedCustomers.contains(customer.uid!)
-                                      ? 'Unblock'
-                                      : 'Block')))
+                              onPressed: () =>
+                                  _blockCustomer(customer['customerID']),
+                              child: Text(blockedCustomers
+                                      .contains(customer['customerID'])
+                                  ? 'Unblock'
+                                  : 'Block')))
                     ]);
               });
         });
