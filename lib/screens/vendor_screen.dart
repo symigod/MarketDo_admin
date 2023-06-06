@@ -32,8 +32,8 @@ class _VendorScreenState extends State<VendorScreen> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              const Text('Registered Vendors',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 22)),
+              const Text('REGISTERED VENDORS',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               Row(children: [
                 //APPROVED BUTTON
                 ElevatedButton(
@@ -54,7 +54,6 @@ class _VendorScreenState extends State<VendorScreen> {
                                 : Colors.grey.shade500)),
                     onPressed: () => setState(() => selectedButton = false),
                     child: const Text('Not Approved')),
-
                 //All BUTTON
                 const SizedBox(width: 10),
                 ElevatedButton(
@@ -69,14 +68,14 @@ class _VendorScreenState extends State<VendorScreen> {
               ])
             ]),
             const SizedBox(height: 10),
-            Row(children: [
-              _rowHeader(flex: 1, text: 'LOGO'),
-              _rowHeader(flex: 3, text: 'BUSINESS NAME'),
-              _rowHeader(flex: 2, text: 'CITY'),
-              _rowHeader(flex: 2, text: 'STATE'),
-              _rowHeader(flex: 1, text: 'ACTION'),
-              _rowHeader(flex: 1, text: 'VIEW MORE')
-            ]),
+            // Row(children: [
+            //   _rowHeader(flex: 1, text: 'LOGO'),
+            //   _rowHeader(flex: 3, text: 'BUSINESS NAME'),
+            //   _rowHeader(flex: 2, text: 'CITY'),
+            //   _rowHeader(flex: 2, text: 'STATE'),
+            //   _rowHeader(flex: 1, text: 'ACTION'),
+            //   _rowHeader(flex: 1, text: 'VIEW MORE')
+            // ]),
             VendorsList(isApproved: selectedButton)
           ]));
 }

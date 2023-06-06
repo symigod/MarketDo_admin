@@ -11,7 +11,7 @@ class FirebaseService {
   CollectionReference customer =
       FirebaseFirestore.instance.collection('customers');
   CollectionReference product =
-      FirebaseFirestore.instance.collection('product');
+      FirebaseFirestore.instance.collection('products');
 
   var users;
 

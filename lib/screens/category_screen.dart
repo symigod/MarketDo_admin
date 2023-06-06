@@ -1,12 +1,13 @@
 // ignore_for_file: unused_local_variable
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:marketdo_admin/firebase_services.dart';
-import 'package:marketdo_admin/widgets/categories_list_widget.dart';
+import 'package:marketdo_admin/widgets/api_widgets.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:path/path.dart';
 
@@ -23,7 +24,6 @@ final FirebaseStorage storage = FirebaseStorage.instance;
 class _CategoryScreenState extends State<CategoryScreen> {
   final FirebaseService _service = FirebaseService();
   final TextEditingController _catName = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
   dynamic image;
   String? fileName;
   // String? _url;
@@ -80,76 +80,98 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Form(
-      key: _formKey,
-      child: Column(children: [
-        Container(
-            alignment: Alignment.topLeft,
-            padding: const EdgeInsets.all(10),
-            child: const Text('Categories',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 26))),
-        const Divider(color: Colors.grey),
-        Row(children: [
-          const SizedBox(width: 10),
-          Column(children: [
-            Container(
-                height: 150,
-                width: 150,
-                decoration: BoxDecoration(
-                    color: Colors.grey.shade500,
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: Colors.grey.shade800)),
-                child: Center(
-                    child: image == null
-                        ? const Text('Category Image')
-                        : Image.memory(image))),
-            const SizedBox(height: 10),
-            ElevatedButton(
-                onPressed: pickImage, child: const Text('Upload Image'))
-          ]),
-          const SizedBox(width: 20),
-          SizedBox(
-              width: 200,
-              child: TextFormField(
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Enter Category Name';
-                    }
-                    return null;
-                  },
-                  controller: _catName,
-                  decoration: const InputDecoration(
-                      label: Text('Enter Category Name'),
-                      contentPadding: EdgeInsets.zero))),
-          const SizedBox(width: 10),
-          TextButton(
-              onPressed: clear,
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.white),
-                  side: MaterialStateProperty.all(
-                      BorderSide(color: Theme.of(context).primaryColor))),
-              child: Text('Cancel',
-                  style: TextStyle(color: Theme.of(context).primaryColor))),
-          const SizedBox(width: 10),
-          image == null
-              ? Container()
-              : ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      saveImageToDb();
-                    }
-                  },
-                  child: const Text('  Save  '))
-        ]),
-        const Divider(
-          color: Colors.grey,
-        ),
-        Container(
-            alignment: Alignment.topLeft,
-            padding: const EdgeInsets.all(10),
-            child: const Text('Category List',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18))),
-        const SizedBox(height: 10),
-        CategoryListWidget(reference: _service.categories)
-      ]));
+  Widget build(BuildContext context) => Container(
+      alignment: Alignment.topLeft,
+      padding: const EdgeInsets.all(10),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              const Text('PRODUCT CATEGORIES',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              ElevatedButton(
+                  onPressed: () {}, child: const Text('Add category'))
+            ]),
+            StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('categories')
+                    .snapshots(),
+                builder: (context, cs) {
+                  if (cs.hasError) {
+                    return errorWidget(cs.error.toString());
+                  }
+                  if (cs.connectionState == ConnectionState.waiting) {
+                    return loadingWidget();
+                  }
+                  if (cs.hasData) {
+                    var category = cs.data!.docs;
+                    return GridView.builder(
+                        padding: const EdgeInsets.all(20),
+                        shrinkWrap: true,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 5, childAspectRatio: 0.75),
+                        itemCount: category.length,
+                        itemBuilder: (context, index) {
+                          var categories = category[index];
+                          List<String> subcategories =
+                              List<String>.from(categories['subcategories']);
+                          return Card(
+                              elevation: 10,
+                              shadowColor: Colors.green.shade900,
+                              shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      width: 2, color: Colors.green.shade900),
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Column(children: [
+                                ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(5),
+                                        topRight: Radius.circular(5)),
+                                    child: Image.network(categories['imageURL'],
+                                        fit: BoxFit.cover, height: 150)),
+                                const SizedBox(height: 10),
+                                Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    child: Text(categories['category'],
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16))),
+                                const Divider(height: 20, thickness: 1),
+                                Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    child: Wrap(
+                                        spacing: 8,
+                                        runSpacing: 4,
+                                        children: subcategories
+                                            .map((subcategory) => Chip(
+                                                label: Text(subcategory),
+                                                backgroundColor:
+                                                    Colors.greenAccent))
+                                            .toList()))
+                              ]));
+                        });
+                  }
+                  return emptyWidget('NO CATEGORIES FOUND');
+                })
+          ]));
+
+  addCategoryForm(context) {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              scrollable: true,
+              title: Text('ADD CATEGORY'),
+              content: Column(
+                children: [
+                  TextField(
+                    
+                  ),
+                ],
+              ),
+            ));
+  }
 }
