@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_admin_scaffold/admin_scaffold.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:marketdo_admin/main.dart';
+import 'package:marketdo_admin/screens/categories/category_screen.dart';
 import 'package:marketdo_admin/screens/dashboard_screen.dart';
-import 'package:marketdo_admin/screens/category_screen.dart';
 import 'package:marketdo_admin/screens/customer_screen.dart';
-import 'package:marketdo_admin/screens/main_category_screen.dart';
 import 'package:marketdo_admin/screens/product_screen.dart';
-import 'package:marketdo_admin/screens/sub_category_screen.dart';
 import 'package:marketdo_admin/screens/vendor_screen.dart';
 import 'package:marketdo_admin/widgets/dialogs.dart';
 
@@ -32,12 +30,12 @@ class _SideMenuState extends State<SideMenu> {
       case CategoryScreen.id:
         setState(() => _selectedScreen = const CategoryScreen());
         break;
-      case MainCategoryScreen.id:
-        setState(() => _selectedScreen = const MainCategoryScreen());
-        break;
-      case SubCategoryScreen.id:
-        setState(() => _selectedScreen = const SubCategoryScreen());
-        break;
+      // case MainCategoryScreen.id:
+      //   setState(() => _selectedScreen = const MainCategoryScreen());
+      //   break;
+      // case SubCategoryScreen.id:
+      //   setState(() => _selectedScreen = const SubCategoryScreen());
+      //   break;
       case VendorScreen.id:
         setState(() => _selectedScreen = const VendorScreen());
         break;

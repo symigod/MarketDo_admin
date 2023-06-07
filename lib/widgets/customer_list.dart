@@ -27,6 +27,7 @@ class _CustomerListState extends State<CustomerList> {
       Fluttertoast.showToast(
           msg:
               'Customer ${newApprovedStatus == true ? 'approved!' : 'unapproved!'}',
+          timeInSecForIosWeb: 3,
           webBgColor:
               '${newApprovedStatus == true ? 'rgb(27, 94, 32)' : 'rgb(183, 28, 28)'} ',
           webPosition: 'center');

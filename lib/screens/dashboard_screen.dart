@@ -31,10 +31,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final int customersLength = customersQuerySnapshot.docs.length;
     final int vendorsLength = vendorsQuerySnapshot.docs.length;
 
-    setState(() => chartData = [
-          ChartData('Customers', customersLength),
-          ChartData('Vendors', vendorsLength)
-        ]);
+    if (mounted) {
+      setState(() => chartData = [
+            ChartData('Customers', customersLength),
+            ChartData('Vendors', vendorsLength)
+          ]);
+    }
   }
 
   @override

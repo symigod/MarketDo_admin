@@ -61,6 +61,7 @@ class _VendorsListState extends State<VendorsList> {
                         }).then((_) => Fluttertoast.showToast(
                                 msg:
                                     'Customer ${data['isApproved'] == true ? 'unapproved!' : 'approved!'}',
+                                timeInSecForIosWeb: 3,
                                 webBgColor:
                                     '${data['isApproved'] == true ? 'rgb(183, 28, 28)' : 'rgb(27, 94, 32)'} ',
                                 webPosition: 'center'));
@@ -123,7 +124,7 @@ class _VendorsListState extends State<VendorsList> {
 class DataTableHeading extends StatelessWidget {
   final String label;
 
-  const DataTableHeading({required this.label});
+  const DataTableHeading({super.key, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +133,7 @@ class DataTableHeading extends StatelessWidget {
       child: Text(
         label,
         textAlign: TextAlign.center,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }

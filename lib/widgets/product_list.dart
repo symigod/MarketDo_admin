@@ -64,6 +64,7 @@ class _ProductListState extends State<ProductList> {
                         }).then((_) => Fluttertoast.showToast(
                                 msg:
                                     'Product ${data['isApproved'] == true ? 'unapproved!' : 'approved!'}',
+                                timeInSecForIosWeb: 3,
                                 webBgColor:
                                     '${data['isApproved'] == true ? 'rgb(183, 28, 28)' : 'rgb(27, 94, 32)'} ',
                                 webPosition: 'center'));
@@ -84,6 +85,7 @@ class _ProductListState extends State<ProductList> {
                         }).then((_) => Fluttertoast.showToast(
                                 msg:
                                     'Product ${data['isApproved'] == true ? 'unapproved!' : 'approved!'}',
+                                timeInSecForIosWeb: 3,
                                 webBgColor:
                                     '${data['isApproved'] == true ? 'rgb(183, 28, 28)' : 'rgb(27, 94, 32)'} ',
                                 webPosition: 'center'));

@@ -119,7 +119,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                             style: TextStyle(fontWeight: FontWeight.bold))))
               ]))));
 
-  login(context) async => password.text == 'marketDo-2023'
+  login(context) async => password.text == 'MarketDo-2023'
       ? await session.write(key: 'session', value: generateToken()).then(
           (value) => Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (_) => const SideMenu())))
