@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:marketdo_admin/widgets/api_widgets.dart';
 
 class ProductList extends StatefulWidget {

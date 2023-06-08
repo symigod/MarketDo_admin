@@ -71,8 +71,8 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
 
       firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
           .ref()
-          .child('category_images')
-          .child(DateTime.now().millisecondsSinceEpoch.toString());
+          .child('product_images')
+          .child(result.files.first.name);
 
       firebase_storage.UploadTask uploadTask = ref.putData(_pickedImageBytes!);
 
