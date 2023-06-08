@@ -47,49 +47,49 @@ class _ProductListState extends State<ProductList> {
               DataCell(Text(
                   'P ${data['regularPrice'].toStringAsFixed(2)} per ${data['unit']}',
                   softWrap: true)),
-              DataCell(data['isApproved'] == true
-                  ? ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.green.shade900)),
-                      child: const FittedBox(
-                          child: Text('APPROVED',
-                              style: TextStyle(color: Colors.white))),
-                      onPressed: () {
-                        FirebaseFirestore.instance
-                            .collection('products')
-                            .doc(data['productID'])
-                            .update({
-                          'isApproved': false
-                        }).then((_) => Fluttertoast.showToast(
-                                msg:
-                                    'Product ${data['isApproved'] == true ? 'unapproved!' : 'approved!'}',
-                                timeInSecForIosWeb: 3,
-                                webBgColor:
-                                    '${data['isApproved'] == true ? 'rgb(183, 28, 28)' : 'rgb(27, 94, 32)'} ',
-                                webPosition: 'center'));
-                      })
-                  : ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.red.shade900)),
-                      child: const FittedBox(
-                          child: Text('UNAPPROVED',
-                              style: TextStyle(color: Colors.white))),
-                      onPressed: () {
-                        FirebaseFirestore.instance
-                            .collection('products')
-                            .doc(data['productID'])
-                            .update({
-                          'isApproved': true
-                        }).then((_) => Fluttertoast.showToast(
-                                msg:
-                                    'Product ${data['isApproved'] == true ? 'unapproved!' : 'approved!'}',
-                                timeInSecForIosWeb: 3,
-                                webBgColor:
-                                    '${data['isApproved'] == true ? 'rgb(183, 28, 28)' : 'rgb(27, 94, 32)'} ',
-                                webPosition: 'center'));
-                      })),
+              // DataCell(data['isApproved'] == true
+              //     ? ElevatedButton(
+              //         style: ButtonStyle(
+              //             backgroundColor:
+              //                 MaterialStateProperty.all(Colors.green.shade900)),
+              //         child: const FittedBox(
+              //             child: Text('APPROVED',
+              //                 style: TextStyle(color: Colors.white))),
+              //         onPressed: () {
+              //           FirebaseFirestore.instance
+              //               .collection('products')
+              //               .doc(data['productID'])
+              //               .update({
+              //             'isApproved': false
+              //           }).then((_) => Fluttertoast.showToast(
+              //                   msg:
+              //                       'Product ${data['isApproved'] == true ? 'unapproved!' : 'approved!'}',
+              //                   timeInSecForIosWeb: 3,
+              //                   webBgColor:
+              //                       '${data['isApproved'] == true ? 'rgb(183, 28, 28)' : 'rgb(27, 94, 32)'} ',
+              //                   webPosition: 'center'));
+              //         })
+              //     : ElevatedButton(
+              //         style: ButtonStyle(
+              //             backgroundColor:
+              //                 MaterialStateProperty.all(Colors.red.shade900)),
+              //         child: const FittedBox(
+              //             child: Text('UNAPPROVED',
+              //                 style: TextStyle(color: Colors.white))),
+              //         onPressed: () {
+              //           FirebaseFirestore.instance
+              //               .collection('products')
+              //               .doc(data['productID'])
+              //               .update({
+              //             'isApproved': true
+              //           }).then((_) => Fluttertoast.showToast(
+              //                   msg:
+              //                       'Product ${data['isApproved'] == true ? 'unapproved!' : 'approved!'}',
+              //                   timeInSecForIosWeb: 3,
+              //                   webBgColor:
+              //                       '${data['isApproved'] == true ? 'rgb(183, 28, 28)' : 'rgb(27, 94, 32)'} ',
+              //                   webPosition: 'center'));
+              //         })),
             ]);
           }).toList();
           return DataTable(
@@ -107,7 +107,7 @@ class _ProductListState extends State<ProductList> {
                 DataColumn(label: Text('CATEGORY')),
                 DataColumn(label: Text('DESCRIPTION')),
                 DataColumn(label: Text('PRICE')),
-                DataColumn(label: Text('STATUS'))
+                // DataColumn(label: Text('STATUS'))
               ],
               rows: rows);
         }

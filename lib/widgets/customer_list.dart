@@ -70,17 +70,17 @@ class _CustomerListState extends State<CustomerList> {
             DataCell(Text(data['email'], softWrap: true)),
             DataCell(Text(data['address'], softWrap: true)),
             DataCell(Text(data['landMark'], softWrap: true)),
-            DataCell(Center(
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: data['isApproved'] == true
-                            ? Colors.green.shade900
-                            : Colors.red.shade900),
-                    onPressed: () =>
-                        _blockCustomer(data['customerID'], data['isApproved']),
-                    child: Text(data['isApproved'] == false
-                        ? 'UNAPPROVED'
-                        : 'APPROVED'))))
+            // DataCell(Center(
+            //     child: ElevatedButton(
+            //         style: ElevatedButton.styleFrom(
+            //             backgroundColor: data['isApproved'] == true
+            //                 ? Colors.green.shade900
+            //                 : Colors.red.shade900),
+            //         onPressed: () =>
+            //             _blockCustomer(data['customerID'], data['isApproved']),
+            //         child: Text(data['isApproved'] == false
+            //             ? 'UNAPPROVED'
+            //             : 'APPROVED'))))
           ]);
         }).toList();
         return DataTable(
@@ -98,9 +98,9 @@ class _CustomerListState extends State<CustomerList> {
               DataColumn(label: Text('EMAIL')),
               DataColumn(label: Text('ADDRESS')),
               DataColumn(label: Text('LANDMARK')),
-              DataColumn(
-                  label: Center(
-                      child: Text('STATUS', textAlign: TextAlign.center)))
+              // DataColumn(
+              //     label: Center(
+              //         child: Text('STATUS', textAlign: TextAlign.center)))
             ],
             rows: rows);
       });
