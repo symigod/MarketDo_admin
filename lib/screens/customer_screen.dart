@@ -31,42 +31,44 @@ class _CustomerScreenState extends State<CustomerScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              const Text('REGISTERED CUSTOMERS',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              Row(children: [
-                //APPROVED BUTTON
-                ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            selectedButton == true
-                                ? Theme.of(context).primaryColor
-                                : Colors.grey.shade500)),
-                    onPressed: () => setState(() => selectedButton = true),
-                    child: const Text('Approved')),
-                //REJECTED BUTTON
-                const SizedBox(width: 10),
-                ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            selectedButton == false
-                                ? Theme.of(context).primaryColor
-                                : Colors.grey.shade500)),
-                    onPressed: () => setState(() => selectedButton = false),
-                    child: const Text('Not Approved')),
-                //All BUTTON
-                const SizedBox(width: 10),
-                ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            selectedButton == null
-                                ? Theme.of(context).primaryColor
-                                : Colors.grey.shade500)),
-                    onPressed: () => setState(() => selectedButton = null),
-                    child: const Text('All'
-                        ''))
-              ])
-            ]),
+            const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('REGISTERED CUSTOMERS',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  // Row(children: [
+                  //   //APPROVED BUTTON
+                  //   ElevatedButton(
+                  //       style: ButtonStyle(
+                  //           backgroundColor: MaterialStateProperty.all(
+                  //               selectedButton == true
+                  //                   ? Theme.of(context).primaryColor
+                  //                   : Colors.grey.shade500)),
+                  //       onPressed: () => setState(() => selectedButton = true),
+                  //       child: const Text('Approved')),
+                  //   //REJECTED BUTTON
+                  //   const SizedBox(width: 10),
+                  //   ElevatedButton(
+                  //       style: ButtonStyle(
+                  //           backgroundColor: MaterialStateProperty.all(
+                  //               selectedButton == false
+                  //                   ? Theme.of(context).primaryColor
+                  //                   : Colors.grey.shade500)),
+                  //       onPressed: () => setState(() => selectedButton = false),
+                  //       child: const Text('Not Approved')),
+                  //   //All BUTTON
+                  //   const SizedBox(width: 10),
+                  //   ElevatedButton(
+                  //       style: ButtonStyle(
+                  //           backgroundColor: MaterialStateProperty.all(
+                  //               selectedButton == null
+                  //                   ? Theme.of(context).primaryColor
+                  //                   : Colors.grey.shade500)),
+                  //       onPressed: () => setState(() => selectedButton = null),
+                  //       child: const Text('All'
+                  //           ''))
+                  // ])
+                ]),
             const SizedBox(height: 10),
             // Row(children: [
             //   _rowHeader(flex: 1, text: 'IMAGE'),

@@ -29,72 +29,66 @@ class _VendorDetailsCardState extends State<VendorDetailsCard> {
           return ListView.builder(
               shrinkWrap: true,
               itemCount: vendor.length,
-              itemBuilder: (context, index) {
-                return AlertDialog(
-                    title: Text(vendor[index]['businessName']),
-                    content: SizedBox(
-                        width: MediaQuery.of(context).size.width / 3,
-                        child: SingleChildScrollView(
-                            child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                              Stack(alignment: Alignment.center, children: [
-                                Container(
-                                    padding: const EdgeInsets.all(20),
-                                    height: 125,
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: NetworkImage(
-                                                '${vendor[index]['shopImage']}'),
-                                            fit: BoxFit.cover))),
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Container(
-                                          height: 100,
-                                          width: 100,
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                  color: Colors.white,
-                                                  width: 3),
-                                              image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      '${vendor[index]['logo']}'),
-                                                  fit: BoxFit.cover)))
-                                    ])
-                              ]),
-                              const Divider(color: Colors.black12),
-                              Text('CITY: ${vendor[index]['city']}'),
-                              const Divider(color: Colors.black12),
-                              Text('STATE: ${vendor[index]['state']}'),
-                              const Divider(color: Colors.black12),
-                              Text('COUNTRY: ${vendor[index]['country']}'),
-                              const Divider(color: Colors.black12),
-                              Text('EMAIL: ${vendor[index]['email']}'),
-                              const Divider(color: Colors.black12),
-                              Text('LANDMARK: ${vendor[index]['landMark']}'),
-                              const Divider(color: Colors.black12),
-                              Text('MOBILE: ${vendor[index]['mobile']}'),
-                              const Divider(color: Colors.black12),
-                              Text('PIN CODE: ${vendor[index]['pinCode']}'),
-                              const Divider(color: Colors.black12),
-                              Text(
-                                  'TAX REGISTERED: ${vendor[index]['isTaxRegistered'] == true ? 'YES' : 'NO'}'),
-                              const Divider(color: Colors.black12),
-                              Text('TIN: ${vendor[index]['tin']}')
-                            ]))),
-                    actions: [
-                      ElevatedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Text('Close'),
-                          ))
-                    ]);
-              });
+              itemBuilder: (context, index) => AlertDialog(
+                      titlePadding: EdgeInsets.all(5),
+                      title: Stack(alignment: Alignment.center, children: [
+                        Container(
+                            padding: const EdgeInsets.all(20),
+                            height: 200,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: NetworkImage(
+                                        '${vendor[index]['shopImage']}'),
+                                    fit: BoxFit.cover))),
+                        Container(
+                            height: 175,
+                            width: 175,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border:
+                                    Border.all(color: Colors.white, width: 3),
+                                image: DecorationImage(
+                                    image: NetworkImage(
+                                        '${vendor[index]['logo']}'),
+                                    fit: BoxFit.cover)))
+                      ]),
+                      content: SizedBox(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ListTile(
+                                    leading: const Icon(Icons.store),
+                                    title: Text(vendor[index]['businessName']),
+                                    subtitle: Text(vendor[index]['vendorID'])),
+                                ListTile(
+                                    leading: const Icon(Icons.comment),
+                                    title: Text(vendor[index]['email']),
+                                    subtitle: Text(vendor[index]['mobile'])),
+                                ListTile(
+                                    leading: const Icon(Icons.location_on),
+                                    title: Text(vendor[index]['address']),
+                                    subtitle: Text(vendor[index]['landMark'])),
+                                ListTile(
+                                    leading: const Icon(Icons.location_on),
+                                    title: Text(
+                                        'TAX REGISTERED: ${vendor[index]['isTaxRegistered'] == true ? 'YES' : 'NO'}'),
+                                    subtitle: Text(
+                                        'PIN CODE: ${vendor[index]['pinCode']}')),
+                                ListTile(
+                                    leading: const Icon(Icons.location_on),
+                                    title: const Text('REGISTERED ON:'),
+                                    subtitle:
+                                        Text('TIN: ${vendor[index]['tin']}')),
+                              ])),
+                      actions: [
+                        ElevatedButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Text('Close')))
+                      ]));
         }
         return emptyWidget('VENDOR NOT FOUND');
       });

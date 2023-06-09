@@ -68,8 +68,7 @@ class _CustomerListState extends State<CustomerList> {
                 child: Text(data['name'], softWrap: true))),
             DataCell(Text(data['mobile'], softWrap: true)),
             DataCell(Text(data['email'], softWrap: true)),
-            DataCell(Text(data['address'], softWrap: true)),
-            DataCell(Text(data['landMark'], softWrap: true)),
+            DataCell(Text(data['address'], softWrap: true))
             // DataCell(Center(
             //     child: ElevatedButton(
             //         style: ElevatedButton.styleFrom(
@@ -96,8 +95,7 @@ class _CustomerListState extends State<CustomerList> {
               DataColumn(label: Text('NAME')),
               DataColumn(label: Text('MOBILE')),
               DataColumn(label: Text('EMAIL')),
-              DataColumn(label: Text('ADDRESS')),
-              DataColumn(label: Text('LANDMARK')),
+              DataColumn(label: Text('ADDRESS'))
               // DataColumn(
               //     label: Center(
               //         child: Text('STATUS', textAlign: TextAlign.center)))

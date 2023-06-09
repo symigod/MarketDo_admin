@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:marketdo_admin/widgets/api_widgets.dart';
 
 class ProductList extends StatefulWidget {
-  final bool? isApproved;
-  const ProductList({this.isApproved, Key? key}) : super(key: key);
+  // final bool? isApproved;
+  const ProductList({/* this.isApproved, */ Key? key}) : super(key: key);
 
   @override
   State<ProductList> createState() => _ProductListState();
@@ -15,17 +15,18 @@ class _ProductListState extends State<ProductList> {
   Widget build(BuildContext context) => StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('products')
-          .where('isApproved', isEqualTo: widget.isApproved)
+          .orderBy('productName')
+          // .where('isApproved', isEqualTo: widget.isApproved)
           .snapshots(),
-      builder: (context, vs) {
-        if (vs.hasError) {
-          return errorWidget(vs.error.toString());
+      builder: (context, ps) {
+        if (ps.hasError) {
+          return errorWidget(ps.error.toString());
         }
-        if (vs.connectionState == ConnectionState.waiting) {
+        if (ps.connectionState == ConnectionState.waiting) {
           return loadingWidget();
         }
-        if (vs.data!.docs.isNotEmpty) {
-          final List<DataRow> rows = vs.data!.docs.map((document) {
+        if (ps.data!.docs.isNotEmpty) {
+          final List<DataRow> rows = ps.data!.docs.map((document) {
             final Map<String, dynamic> data = document.data();
             return DataRow(cells: [
               DataCell(Wrap(children: [
@@ -40,12 +41,30 @@ class _ProductListState extends State<ProductList> {
               DataCell(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(data['productName'], softWrap: true))),
-              DataCell(Text(data['brand'], softWrap: true)),
+              // DataCell(Text(data['brand'], softWrap: true)),
               DataCell(Text(data['category'], softWrap: true)),
               DataCell(Text(data['description'], softWrap: true)),
               DataCell(Text(
                   'P ${data['regularPrice'].toStringAsFixed(2)} per ${data['unit']}',
                   softWrap: true)),
+              DataCell(FutureBuilder(
+                  future: FirebaseFirestore.instance
+                      .collection('vendor')
+                      .where('vendorID', isEqualTo: data['vendorID'])
+                      .get(),
+                  builder: (context, vs) {
+                    if (vs.hasError) {
+                      return errorWidget(vs.error.toString());
+                    }
+                    if (vs.connectionState == ConnectionState.waiting) {
+                      return loadingWidget();
+                    }
+                    if (vs.hasData) {
+                      return Text(vs.data!.docs[0]['businessName'],
+                          softWrap: true);
+                    }
+                    return emptyWidget('VENDOR NOT FOUND');
+                  })),
               // DataCell(data['isApproved'] == true
               //     ? ElevatedButton(
               //         style: ButtonStyle(
@@ -102,10 +121,11 @@ class _ProductListState extends State<ProductList> {
               columns: const [
                 DataColumn(label: Text('IMAGES')),
                 DataColumn(label: Text('PRODUCT NAME')),
-                DataColumn(label: Text('BRAND')),
+                // DataColumn(label: Text('BRAND')),
                 DataColumn(label: Text('CATEGORY')),
                 DataColumn(label: Text('DESCRIPTION')),
                 DataColumn(label: Text('PRICE')),
+                DataColumn(label: Text('VENDOR')),
                 // DataColumn(label: Text('STATUS'))
               ],
               rows: rows);

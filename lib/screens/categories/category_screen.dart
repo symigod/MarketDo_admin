@@ -5,7 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:marketdo_admin/screens/categories/add_category.dart';
-import 'package:marketdo_admin/screens/categories/edit_category.dart';
 import 'package:marketdo_admin/widgets/api_widgets.dart';
 import 'package:marketdo_admin/widgets/dialogs.dart';
 
@@ -38,6 +37,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       builder: (context) => const AddCategoryDialog()),
                   child: const Text('Add category'))
             ]),
+            const SizedBox(height: 10),
             StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('categories')
@@ -53,11 +53,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   if (cs.hasData) {
                     var category = cs.data!.docs;
                     return GridView.builder(
-                        padding: const EdgeInsets.all(20),
                         shrinkWrap: true,
                         gridDelegate:
-                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 350, childAspectRatio: 0.7),
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                        ),
                         itemCount: category.length,
                         itemBuilder: (context, index) {
                           var categories = category[index];
@@ -68,79 +70,55 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               shadowColor: Colors.green.shade900,
                               shape: RoundedRectangleBorder(
                                   side: BorderSide(
-                                      width: 2, color: Colors.green.shade900),
+                                      color: Colors.green.shade900, width: 2),
                                   borderRadius: BorderRadius.circular(5)),
-                              child: Column(children: [
-                                ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(5),
-                                        topRight: Radius.circular(5)),
-                                    child: Image.network(categories['imageURL'],
-                                        fit: BoxFit.cover, height: 200)),
-                                const SizedBox(height: 10),
-                                ListTile(
-                                    dense: true,
-                                    title: Text(categories['category'],
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    trailing: Row(
-                                        mainAxisSize: MainAxisSize.min,
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                        borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(5),
+                                            topRight: Radius.circular(5)),
+                                        child: Image.network(
+                                            categories['imageURL'],
+                                            fit: BoxFit.cover)),
+                                    Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Text(categories['category'],
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16.0))),
+                                    Expanded(
+                                        child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8),
+                                            child: Wrap(
+                                                alignment: WrapAlignment.start,
+                                                spacing: 4,
+                                                runSpacing: 4,
+                                                children: subcategories
+                                                    .map((subcategory) => Chip(
+                                                        label:
+                                                            Text(subcategory),
+                                                        backgroundColor:
+                                                            Colors.greenAccent))
+                                                    .toList()))),
+                                    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
-                                          ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              child: Container(
-                                                  width: 35,
-                                                  height: 35,
-                                                  color: Colors.blue.shade900,
-                                                  child: GestureDetector(
-                                                      onTap: () => showDialog(
-                                                          barrierDismissible:
-                                                              false,
-                                                          context: context,
-                                                          builder: (_) =>
-                                                              EditCategoryDialog(
-                                                                  categoryID:
-                                                                      categories[
-                                                                          'categoryID'])),
-                                                      child: const Icon(
-                                                          Icons.edit,
-                                                          color:
-                                                              Colors.white)))),
-                                          const SizedBox(width: 5),
-                                          ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              child: Container(
-                                                  width: 35,
-                                                  height: 35,
-                                                  color: Colors.red.shade900,
-                                                  child: GestureDetector(
-                                                      onTap: () =>
-                                                          deleteCategory(
-                                                              categories[
-                                                                  'categoryID']),
-                                                      child: const Icon(
-                                                          Icons.delete,
-                                                          color:
-                                                              Colors.white))))
-                                        ])),
-                                const Divider(height: 20, thickness: 1),
-                                Expanded(
-                                    child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Wrap(
-                                            alignment: WrapAlignment.center,
-                                            spacing: 8,
-                                            runSpacing: 4,
-                                            children: subcategories
-                                                .map((subcategory) => Chip(
-                                                    label: Text(subcategory),
-                                                    backgroundColor:
-                                                        Colors.greenAccent))
-                                                .toList())))
-                              ]));
+                                          IconButton(
+                                              icon: Icon(Icons.edit,
+                                                  color: Colors.blue.shade900),
+                                              onPressed: () {}),
+                                          IconButton(
+                                              icon: Icon(Icons.delete,
+                                                  color: Colors.red.shade900),
+                                              onPressed: () => deleteCategory(
+                                                  categories['categoryID']))
+                                        ]),
+                                    const SizedBox(height: 10)
+                                  ]));
                         });
                   }
                   return emptyWidget('NO CATEGORIES FOUND');

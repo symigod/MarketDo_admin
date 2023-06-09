@@ -149,7 +149,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         }
                         if (vs.hasData) {
                           return analyticWidget(
-                              title: "Top Sales",
+                              title: "Top Sellers",
                               value:
                                   '${vs.data!.docs[0]['businessName']}\n$maxOccurrences orders sold');
                         }
