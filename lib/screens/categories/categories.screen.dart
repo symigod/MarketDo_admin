@@ -1,10 +1,12 @@
 // ignore_for_file: unused_local_variable
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:marketdo_admin/screens/categories/add_category.dart';
+import 'package:marketdo_admin/screens/categories/add.category.dart';
+import 'package:marketdo_admin/screens/categories/edit.category.dart';
 import 'package:marketdo_admin/widgets/api_widgets.dart';
 import 'package:marketdo_admin/widgets/dialogs.dart';
 
@@ -56,15 +58,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         shrinkWrap: true,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          mainAxisSpacing: 10,
-                          crossAxisSpacing: 10,
-                        ),
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 10,
+                                crossAxisSpacing: 10),
                         itemCount: category.length,
                         itemBuilder: (context, index) {
                           var categories = category[index];
                           List<String> subcategories =
                               List<String>.from(categories['subcategories']);
+                          subcategories.sort((a, b) =>
+                              a.toLowerCase().compareTo(b.toLowerCase()));
                           return Card(
                               elevation: 10,
                               shadowColor: Colors.green.shade900,
@@ -75,19 +78,56 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    ClipRRect(
-                                        borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(5),
-                                            topRight: Radius.circular(5)),
-                                        child: Image.network(
-                                            categories['imageURL'],
-                                            fit: BoxFit.cover)),
-                                    Padding(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Text(categories['category'],
+                                    SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                4,
+                                        width: MediaQuery.of(context).size.width /
+                                            3,
+                                        child: ClipRRect(
+                                            borderRadius: const BorderRadius.only(
+                                                topLeft: Radius.circular(5),
+                                                topRight: Radius.circular(5)),
+                                            child: categories['category'] ==
+                                                    'Others'
+                                                ? Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Image.network(
+                                                        categories['imageURL'],
+                                                        fit: BoxFit.fitHeight))
+                                                : CachedNetworkImage(
+                                                    imageUrl:
+                                                        categories['imageURL'],
+                                                    fit: BoxFit.cover))),
+                                    ListTile(
+                                        dense: true,
+                                        title: Text(categories['category'],
                                             style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16.0))),
+                                                fontWeight: FontWeight.bold)),
+                                        trailing: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              IconButton(
+                                                  icon: Icon(Icons.edit,
+                                                      color:
+                                                          Colors.blue.shade900),
+                                                  onPressed: () => showDialog(
+                                                      context: context,
+                                                      builder: (_) =>
+                                                          EditCategoryDialog(
+                                                              categoryID:
+                                                                  categories[
+                                                                      'categoryID']))),
+                                              IconButton(
+                                                  icon: Icon(Icons.delete,
+                                                      color:
+                                                          Colors.red.shade900),
+                                                  onPressed: () =>
+                                                      deleteCategory(categories[
+                                                          'categoryID']))
+                                            ])),
                                     Expanded(
                                         child: Padding(
                                             padding: const EdgeInsets.symmetric(
@@ -98,25 +138,15 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                 runSpacing: 4,
                                                 children: subcategories
                                                     .map((subcategory) => Chip(
-                                                        label:
-                                                            Text(subcategory),
+                                                        label: Text(subcategory,
+                                                            style: const TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold)),
                                                         backgroundColor:
                                                             Colors.greenAccent))
                                                     .toList()))),
-                                    Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          IconButton(
-                                              icon: Icon(Icons.edit,
-                                                  color: Colors.blue.shade900),
-                                              onPressed: () {}),
-                                          IconButton(
-                                              icon: Icon(Icons.delete,
-                                                  color: Colors.red.shade900),
-                                              onPressed: () => deleteCategory(
-                                                  categories['categoryID']))
-                                        ]),
                                     const SizedBox(height: 10)
                                   ]));
                         });

@@ -14,7 +14,7 @@ class _VendorDetailsCardState extends State<VendorDetailsCard> {
   @override
   Widget build(BuildContext context) => StreamBuilder(
       stream: FirebaseFirestore.instance
-          .collection('vendor')
+          .collection('vendors')
           .where('vendorID', isEqualTo: widget.vendorID)
           .snapshots(),
       builder: (context, snapshot) {
@@ -30,7 +30,7 @@ class _VendorDetailsCardState extends State<VendorDetailsCard> {
               shrinkWrap: true,
               itemCount: vendor.length,
               itemBuilder: (context, index) => AlertDialog(
-                      titlePadding: EdgeInsets.all(5),
+                      titlePadding: const EdgeInsets.all(5),
                       title: Stack(alignment: Alignment.center, children: [
                         Container(
                             padding: const EdgeInsets.all(20),

@@ -4,6 +4,68 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:marketdo_admin/widgets/api_widgets.dart';
 import 'package:marketdo_admin/widgets/dialogs.dart';
 
+class CustomerScreen extends StatefulWidget {
+  static const String id = 'customer-screen';
+  const CustomerScreen({Key? key}) : super(key: key);
+
+  @override
+  State<CustomerScreen> createState() => _CustomerScreenState();
+}
+
+class _CustomerScreenState extends State<CustomerScreen> {
+  bool? selectedButton;
+
+  @override
+  Widget build(BuildContext context) => Container(
+      alignment: Alignment.topLeft,
+      padding: const EdgeInsets.all(10),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('REGISTERED CUSTOMERS',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  // Row(children: [
+                  //   //APPROVED BUTTON
+                  //   ElevatedButton(
+                  //       style: ButtonStyle(
+                  //           backgroundColor: MaterialStateProperty.all(
+                  //               selectedButton == true
+                  //                   ? Theme.of(context).primaryColor
+                  //                   : Colors.grey.shade500)),
+                  //       onPressed: () => setState(() => selectedButton = true),
+                  //       child: const Text('Approved')),
+                  //   //REJECTED BUTTON
+                  //   const SizedBox(width: 10),
+                  //   ElevatedButton(
+                  //       style: ButtonStyle(
+                  //           backgroundColor: MaterialStateProperty.all(
+                  //               selectedButton == false
+                  //                   ? Theme.of(context).primaryColor
+                  //                   : Colors.grey.shade500)),
+                  //       onPressed: () => setState(() => selectedButton = false),
+                  //       child: const Text('Not Approved')),
+                  //   //All BUTTON
+                  //   const SizedBox(width: 10),
+                  //   ElevatedButton(
+                  //       style: ButtonStyle(
+                  //           backgroundColor: MaterialStateProperty.all(
+                  //               selectedButton == null
+                  //                   ? Theme.of(context).primaryColor
+                  //                   : Colors.grey.shade500)),
+                  //       onPressed: () => setState(() => selectedButton = null),
+                  //       child: const Text('All'
+                  //           ''))
+                  // ])
+                ]),
+            const SizedBox(height: 10),
+            CustomerList(isApproved: selectedButton)
+          ]));
+}
+
 class CustomerList extends StatefulWidget {
   final bool? isApproved;
 
@@ -68,6 +130,7 @@ class _CustomerListState extends State<CustomerList> {
                 child: Text(data['name'], softWrap: true))),
             DataCell(Text(data['mobile'], softWrap: true)),
             DataCell(Text(data['email'], softWrap: true)),
+            DataCell(Text(data['address'], softWrap: true)),
             DataCell(Text(data['address'], softWrap: true))
             // DataCell(Center(
             //     child: ElevatedButton(
@@ -95,7 +158,8 @@ class _CustomerListState extends State<CustomerList> {
               DataColumn(label: Text('NAME')),
               DataColumn(label: Text('MOBILE')),
               DataColumn(label: Text('EMAIL')),
-              DataColumn(label: Text('ADDRESS'))
+              DataColumn(label: Text('ADDRESS')),
+              DataColumn(label: Text('ACTION'))
               // DataColumn(
               //     label: Center(
               //         child: Text('STATUS', textAlign: TextAlign.center)))

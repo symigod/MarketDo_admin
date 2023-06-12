@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirebaseService {
   CollectionReference categories =
       FirebaseFirestore.instance.collection('categories');
-  CollectionReference vendor = FirebaseFirestore.instance.collection('vendor');
+  CollectionReference vendor = FirebaseFirestore.instance.collection('vendors');
   CollectionReference customer =
       FirebaseFirestore.instance.collection('customers');
   CollectionReference product =

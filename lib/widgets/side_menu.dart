@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_admin_scaffold/admin_scaffold.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:marketdo_admin/main.dart';
-import 'package:marketdo_admin/screens/categories/category_screen.dart';
+import 'package:marketdo_admin/screens/categories/categories.screen.dart';
+import 'package:marketdo_admin/screens/customers/customers.screen.dart';
 import 'package:marketdo_admin/screens/dashboard_screen.dart';
-import 'package:marketdo_admin/screens/customer_screen.dart';
-import 'package:marketdo_admin/screens/product_screen.dart';
-import 'package:marketdo_admin/screens/vendor_screen.dart';
+import 'package:marketdo_admin/screens/products/products.screen.dart';
+import 'package:marketdo_admin/screens/vendors/vendors.screen.dart';
 import 'package:marketdo_admin/widgets/dialogs.dart';
 
 class SideMenu extends StatefulWidget {

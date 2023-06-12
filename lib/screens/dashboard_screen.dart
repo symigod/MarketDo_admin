@@ -24,7 +24,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final CollectionReference customersCollection =
         firestore.collection('customers');
     final CollectionReference vendorsCollection =
-        firestore.collection('vendor');
+        firestore.collection('vendors');
     final customersQuerySnapshot = await customersCollection.get();
     final vendorsQuerySnapshot = await vendorsCollection.get();
     final int customersLength = customersQuerySnapshot.docs.length;
@@ -140,7 +140,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   }
                   return FutureBuilder(
                       future: FirebaseFirestore.instance
-                          .collection('vendor')
+                          .collection('vendors')
                           .where('vendorID', isEqualTo: mostOccurringVendor)
                           .get(),
                       builder: (context, vs) {

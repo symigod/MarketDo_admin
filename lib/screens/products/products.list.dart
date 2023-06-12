@@ -49,7 +49,7 @@ class _ProductListState extends State<ProductList> {
                   softWrap: true)),
               DataCell(FutureBuilder(
                   future: FirebaseFirestore.instance
-                      .collection('vendor')
+                      .collection('vendors')
                       .where('vendorID', isEqualTo: data['vendorID'])
                       .get(),
                   builder: (context, vs) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:marketdo_admin/widgets/vendor_list.dart';
+import 'package:marketdo_admin/screens/vendors/vendors.list.dart';
 
 class VendorScreen extends StatefulWidget {
   static const String id = 'vendors-screen';
