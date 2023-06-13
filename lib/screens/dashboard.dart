@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:marketdo_admin/firebase_services.dart';
-import 'package:marketdo_admin/widgets/api_widgets.dart';
+import 'package:marketdo_admin/firebase.services.dart';
+import 'package:marketdo_admin/widgets/snapshots.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -14,17 +13,11 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  final FirebaseService _services = FirebaseService();
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   late List<CustomerVendorData> customerVendorData = [];
   late int customers = 0;
   late int vendors = 0;
 
   Future<void> getCustomersAndVendors() async {
-    final CollectionReference customersCollection =
-        firestore.collection('customers');
-    final CollectionReference vendorsCollection =
-        firestore.collection('vendors');
     final customersQuerySnapshot = await customersCollection.get();
     final vendorsQuerySnapshot = await vendorsCollection.get();
     final int customersLength = customersQuerySnapshot.docs.length;
@@ -36,23 +29,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ]);
     }
   }
-
-  // Future<void> getProducts() async {
-  //   final CollectionReference productsCollection =
-  //       firestore.collection('products');
-  //   final CollectionReference categoriesCollection =
-  //       firestore.collection('categories');
-  //   final products = await productsCollection.get();
-  //   final categories = await categoriesCollection.get();
-  //   final int customersLength = products.docs.length;
-  //   final int vendorsLength = categories.docs.length;
-  //   if (mounted) {
-  //     setState(() => productsData = [
-  //           CustomerVendorData('Customers', customersLength),
-  //           CustomerVendorData('Vendors', vendorsLength)
-  //         ]);
-  //   }
-  // }
 
   @override
   void initState() {
@@ -89,7 +65,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ])))),
         //PRODUCTS TOTAL
         StreamBuilder(
-            stream: _services.product.snapshots(),
+            stream: productsCollection.snapshots(),
             builder: (context, snapshot) => snapshot.hasError
                 ? Center(child: Text('Error: ${snapshot.error}'))
                 : snapshot.connectionState == ConnectionState.waiting
@@ -113,7 +89,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         //                 : const SizedBox()),
         // TOP SALES
         StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('orders').snapshots(),
+            stream: ordersCollection.snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return const Text('Something went wrong');
@@ -138,8 +114,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   }
                 }
                 return FutureBuilder(
-                    future: FirebaseFirestore.instance
-                        .collection('vendors')
+                    future: vendorsCollection
                         .where('vendorID', isEqualTo: mostOccurringVendor)
                         .get(),
                     builder: (context, vs) {
@@ -192,35 +167,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     textAlign: TextAlign.center))),
                         Container()
                       ]))));
-
-  // Widget loadingWidget({required String title}) => Padding(
-  //     padding: const EdgeInsets.only(top: 20),
-  //     child: SizedBox(
-  //         height: 200,
-  //         width: 275,
-  //         child: Card(
-  //             color: Colors.black45,
-  //             child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                 children: [
-  //                   Column(
-  //                       crossAxisAlignment: CrossAxisAlignment.center,
-  //                       mainAxisAlignment: MainAxisAlignment.center,
-  //                       children: [
-  //                         Padding(
-  //                             padding: const EdgeInsets.only(top: 10),
-  //                             child: Text(title,
-  //                                 style: const TextStyle(
-  //                                     fontSize: 20,
-  //                                     color: Colors.white,
-  //                                     fontWeight: FontWeight.bold))),
-  //                         const Divider(color: Colors.white)
-  //                       ]),
-  //                   const Center(
-  //                       child: CircularProgressIndicator(color: Colors.white)),
-  //                   Container()
-  //                 ]))));
 }
 
 class CustomerVendorData {

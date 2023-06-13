@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:marketdo_admin/screens/vendors/vendor.card.dart';
-import 'package:marketdo_admin/screens/vendors/vendor.products.dart';
-import 'package:marketdo_admin/widgets/api_widgets.dart';
+import 'package:marketdo_admin/screens/vendors/card.vendor.dart';
+import 'package:marketdo_admin/screens/vendors/products.vendor.dart';
+import 'package:marketdo_admin/widgets/snapshots.dart';
+import 'package:marketdo_admin/firebase.services.dart';
 
 class VendorsList extends StatefulWidget {
   final bool? isApproved;
@@ -16,8 +16,7 @@ class VendorsList extends StatefulWidget {
 class _VendorsListState extends State<VendorsList> {
   @override
   Widget build(BuildContext context) => StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('vendors')
+      stream: vendorsCollection
           .where('isApproved', isEqualTo: widget.isApproved)
           .snapshots(),
       builder: (context, vs) {
@@ -61,8 +60,7 @@ class _VendorsListState extends State<VendorsList> {
                             backgroundColor: MaterialStateProperty.all(
                                 Colors.green.shade900)),
                         child: const Icon(Icons.check, color: Colors.white),
-                        onPressed: () => FirebaseFirestore.instance
-                            .collection('vendors')
+                        onPressed: () => vendorsCollection
                             .doc(data['vendorID'])
                             .update({'isApproved': false}).then((_) =>
                                 Fluttertoast.showToast(
@@ -77,7 +75,9 @@ class _VendorsListState extends State<VendorsList> {
                             backgroundColor:
                                 MaterialStateProperty.all(Colors.red.shade900)),
                         child: const Icon(Icons.close, color: Colors.white),
-                        onPressed: () => FirebaseFirestore.instance.collection('vendors').doc(data['vendorID']).update({'isApproved': true}).then((_) => Fluttertoast.showToast(msg: 'Vendor ${data['isApproved'] == true ? 'unapproved!' : 'approved!'}', webBgColor: '${data['isApproved'] == true ? 'rgb(183, 28, 28)' : 'rgb(27, 94, 32)'} ', webPosition: 'center'))),
+                        onPressed: () => vendorsCollection
+                            .doc(data['vendorID'])
+                            .update({'isApproved': true}).then((_) => Fluttertoast.showToast(msg: 'Vendor ${data['isApproved'] == true ? 'unapproved!' : 'approved!'}', webBgColor: '${data['isApproved'] == true ? 'rgb(183, 28, 28)' : 'rgb(27, 94, 32)'} ', webPosition: 'center'))),
                 const SizedBox(width: 10),
                 ElevatedButton(
                     style: ButtonStyle(

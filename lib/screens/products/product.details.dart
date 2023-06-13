@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:marketdo_admin/models/product.model.dart';
-import 'package:marketdo_admin/widgets/api_widgets.dart';
+import 'package:marketdo_admin/widgets/snapshots.dart';
+import 'package:marketdo_admin/firebase.services.dart';
 
 class ProductDetails extends StatefulWidget {
   final String productID;
@@ -15,8 +15,7 @@ class ProductDetails extends StatefulWidget {
 class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) => StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('products')
+      stream: productsCollection
           .where('productID', isEqualTo: widget.productID)
           .snapshots(),
       builder: (context, ps) {
@@ -58,8 +57,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                           const Icon(Icons.favorite, color: Colors.red),
                           const SizedBox(width: 5),
                           StreamBuilder(
-                              stream: FirebaseFirestore.instance
-                                  .collection('favorites')
+                              stream: favoritesCollection
                                   .where('productID',
                                       isEqualTo: product.productID)
                                   .snapshots(),

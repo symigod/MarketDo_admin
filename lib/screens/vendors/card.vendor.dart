@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:marketdo_admin/widgets/api_widgets.dart';
+import 'package:marketdo_admin/widgets/snapshots.dart';
 import 'package:marketdo_admin/widgets/dialogs.dart';
+import 'package:marketdo_admin/firebase.services.dart';
 
 class VendorDetailsCard extends StatefulWidget {
   final String vendorID;
@@ -14,8 +15,7 @@ class VendorDetailsCard extends StatefulWidget {
 class _VendorDetailsCardState extends State<VendorDetailsCard> {
   @override
   Widget build(BuildContext context) => StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('vendors')
+      stream: vendorsCollection
           .where('vendorID', isEqualTo: widget.vendorID)
           .snapshots(),
       builder: (context, snapshot) {

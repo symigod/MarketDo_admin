@@ -1,14 +1,14 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:marketdo_admin/screens/categories/add.category.dart';
 import 'package:marketdo_admin/screens/categories/edit.category.dart';
-import 'package:marketdo_admin/widgets/api_widgets.dart';
+import 'package:marketdo_admin/widgets/snapshots.dart';
 import 'package:marketdo_admin/widgets/dialogs.dart';
+import 'package:marketdo_admin/firebase.services.dart';
 
 class CategoryScreen extends StatefulWidget {
   static const String id = 'Category';
@@ -41,10 +41,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             ]),
             const SizedBox(height: 10),
             StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('categories')
-                    .orderBy('category')
-                    .snapshots(),
+                stream: categoriesCollection.orderBy('category').snapshots(),
                 builder: (context, cs) {
                   if (cs.hasError) {
                     return errorWidget(cs.error.toString());
@@ -160,10 +157,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       builder: (_) => confirmDialog(
               context, 'DELETE CATEGORY', 'Do you want to continue?', () {
             try {
-              FirebaseFirestore.instance
-                  .collection('categories')
-                  .doc(categoryID)
-                  .delete();
+              categoriesCollection.doc(categoryID).delete();
               Fluttertoast.showToast(
                   msg: 'Product Category deleted!',
                   timeInSecForIosWeb: 3,

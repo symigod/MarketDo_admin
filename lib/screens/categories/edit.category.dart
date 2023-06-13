@@ -1,9 +1,9 @@
 import 'dart:typed_data';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:marketdo_admin/widgets/api_widgets.dart';
+import 'package:marketdo_admin/firebase.services.dart';
+import 'package:marketdo_admin/widgets/snapshots.dart';
 
 class EditCategoryDialog extends StatefulWidget {
   final String categoryID;
@@ -20,9 +20,8 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
   final CategoryFormData _formData = CategoryFormData();
   final TextEditingController _subcategoryController = TextEditingController();
 
-
   void _submitForm() {
-    final collection = FirebaseFirestore.instance.collection('categories');
+    final collection = categoriesCollection;
     final docID = widget.categoryID;
     if (_formKey.currentState!.validate()) {
       if (_formData.subcategories.isEmpty) {
@@ -71,8 +70,7 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
 
   @override
   Widget build(BuildContext context) => FutureBuilder(
-      future: FirebaseFirestore.instance
-          .collection('categories')
+      future: categoriesCollection
           .where('categoryID', isEqualTo: widget.categoryID)
           .get(),
       builder: (context, cs) {
@@ -174,7 +172,7 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
                                         controller: _subcategoryController,
                                         decoration: InputDecoration(
                                             suffix: ElevatedButton(
-                                                onPressed: (){
+                                                onPressed: () {
                                                   final subcategory =
                                                       _subcategoryController
                                                           .text

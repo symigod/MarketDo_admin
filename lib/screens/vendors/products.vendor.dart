@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:marketdo_admin/models/product.model.dart';
 import 'package:marketdo_admin/screens/products/product.details.dart';
-import 'package:marketdo_admin/widgets/api_widgets.dart';
+import 'package:marketdo_admin/widgets/snapshots.dart';
+import 'package:marketdo_admin/firebase.services.dart';
 
 class VendorProducts extends StatefulWidget {
   final String vendorID;
@@ -15,8 +15,7 @@ class VendorProducts extends StatefulWidget {
 class _VendorProductsState extends State<VendorProducts> {
   @override
   Widget build(BuildContext context) => StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('products')
+      stream: productsCollection
           .where('vendorID', isEqualTo: widget.vendorID)
           .orderBy('productName')
           .snapshots(),
@@ -32,8 +31,7 @@ class _VendorProductsState extends State<VendorProducts> {
           return AlertDialog(
               titlePadding: EdgeInsets.zero,
               title: FutureBuilder(
-                  future: FirebaseFirestore.instance
-                      .collection('vendors')
+                  future: vendorsCollection
                       .where('vendorID', isEqualTo: widget.vendorID)
                       .get(),
                   builder: (context, vs) {

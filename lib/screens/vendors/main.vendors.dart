@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:marketdo_admin/screens/vendors/vendors.list.dart';
+import 'package:marketdo_admin/screens/vendors/list.vendor.dart';
 
 class VendorScreen extends StatefulWidget {
   static const String id = 'vendors-screen';
@@ -57,14 +57,6 @@ class _VendorScreenState extends State<VendorScreen> {
               ])
             ]),
             const SizedBox(height: 10),
-            // Row(children: [
-            //   _rowHeader(flex: 1, text: 'LOGO'),
-            //   _rowHeader(flex: 3, text: 'BUSINESS NAME'),
-            //   _rowHeader(flex: 2, text: 'CITY'),
-            //   _rowHeader(flex: 2, text: 'STATE'),
-            //   _rowHeader(flex: 1, text: 'ACTION'),
-            //   _rowHeader(flex: 1, text: 'VIEW MORE')
-            // ]),
             VendorsList(isApproved: selectedButton)
           ]));
 }

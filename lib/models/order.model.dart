@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Order {
   final address;
   final customerName;
@@ -78,18 +76,4 @@ class Order {
       vendorName: map['vendorName'],
     );
   }
-}
-
-Stream<List<Order>> orderQuery() {
-  return FirebaseFirestore.instance.collection('orders').snapshots().map(
-      (order) => order.docs.map((doc) => Order.fromMap(doc.data())).toList());
-}
-
-Stream<List<Order>> getNumberOfSales(String vendorName) {
-  return FirebaseFirestore.instance
-      .collection('orders')
-      .where('vendorName', isEqualTo: vendorName)
-      .snapshots()
-      .map((order) =>
-          order.docs.map((doc) => Order.fromMap(doc.data())).toList());
 }

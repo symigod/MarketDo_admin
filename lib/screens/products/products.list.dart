@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:marketdo_admin/screens/products/product.details.dart';
-import 'package:marketdo_admin/widgets/api_widgets.dart';
+import 'package:marketdo_admin/widgets/snapshots.dart';
+import 'package:marketdo_admin/firebase.services.dart';
 
 class ProductList extends StatefulWidget {
   // final bool? isApproved;
@@ -14,8 +14,7 @@ class ProductList extends StatefulWidget {
 class _ProductListState extends State<ProductList> {
   @override
   Widget build(BuildContext context) => StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection('products')
+      stream: productsCollection
           .orderBy('productName')
           // .where('isApproved', isEqualTo: widget.isApproved)
           .snapshots(),
@@ -49,8 +48,7 @@ class _ProductListState extends State<ProductList> {
                   'P ${data['regularPrice'].toStringAsFixed(2)} per ${data['unit']}',
                   softWrap: true)),
               DataCell(FutureBuilder(
-                  future: FirebaseFirestore.instance
-                      .collection('vendors')
+                  future: vendorsCollection
                       .where('vendorID', isEqualTo: data['vendorID'])
                       .get(),
                   builder: (context, vs) {
@@ -83,8 +81,7 @@ class _ProductListState extends State<ProductList> {
               //             child: Text('APPROVED',
               //                 style: TextStyle(color: Colors.white))),
               //         onPressed: () {
-              //           FirebaseFirestore.instance
-              //               .collection('products')
+              // productsCollection
               //               .doc(data['productID'])
               //               .update({
               //             'isApproved': false
@@ -104,8 +101,7 @@ class _ProductListState extends State<ProductList> {
               //             child: Text('UNAPPROVED',
               //                 style: TextStyle(color: Colors.white))),
               //         onPressed: () {
-              //           FirebaseFirestore.instance
-              //               .collection('products')
+              //  productsCollection
               //               .doc(data['productID'])
               //               .update({
               //             'isApproved': true

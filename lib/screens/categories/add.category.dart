@@ -1,8 +1,8 @@
 import 'dart:typed_data';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:marketdo_admin/firebase.services.dart';
 
 // ignore: must_be_immutable
 class AddCategoryDialog extends StatefulWidget {
@@ -34,8 +34,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
   }
 
   void _submitForm() {
-    final collection = FirebaseFirestore.instance.collection('categories');
-    final docID = collection.doc().id;
+    final docID = categoriesCollection.doc().id;
     if (_formKey.currentState!.validate()) {
       if (_formData.subcategories.isEmpty) {
         showDialog(
@@ -51,7 +50,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
         return;
       }
       _formKey.currentState!.save();
-      collection.doc(docID).set({
+      categoriesCollection.doc(docID).set({
         'category': _formData.category,
         'categoryID': docID,
         'subcategories': _formData.subcategories,
