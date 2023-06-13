@@ -1,7 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:marketdo_admin/models/product.model.dart';
+import 'package:marketdo_admin/screens/products/product.details.dart';
 import 'package:marketdo_admin/widgets/api_widgets.dart';
 
 class VendorProducts extends StatefulWidget {
@@ -18,9 +18,11 @@ class _VendorProductsState extends State<VendorProducts> {
       stream: FirebaseFirestore.instance
           .collection('products')
           .where('vendorID', isEqualTo: widget.vendorID)
+          .orderBy('productName')
           .snapshots(),
       builder: (context, vps) {
         if (vps.hasError) {
+          print(vps.error.toString());
           return errorWidget(vps.error.toString());
         }
         if (vps.connectionState == ConnectionState.waiting) {
@@ -64,45 +66,48 @@ class _VendorProductsState extends State<VendorProducts> {
                     }
                   }),
               content: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 7),
-                  itemCount: vps.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    List<ProductModel> productModel = vps.data!.docs
-                        .map((doc) => ProductModel.fromFirestore(doc))
-                        .toList();
-                    var product = productModel[index];
-                    return InkWell(
-                        // onTap: () => Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (_) => ProductDetailScreen(
-                        //             productID: product.productID))),
-                        child: Container(
-                            padding: const EdgeInsets.all(8),
-                            height: 80,
-                            width: 80,
-                            child: Column(children: [
-                              ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: SizedBox(
-                                      height: 90,
-                                      width: 90,
-                                      child: CachedNetworkImage(
-                                          imageUrl: product.imageURL,
-                                          fit: BoxFit.cover))),
-                              const SizedBox(height: 10),
-                              Text(product.productName,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(fontSize: 10),
-                                  maxLines: 2)
-                            ])));
-                  },
-                ),
-              ),
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 7),
+                      itemCount: vps.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        List<ProductModel> productModel = vps.data!.docs
+                            .map((doc) => ProductModel.fromFirestore(doc))
+                            .toList();
+                        var product = productModel[index];
+                        return Card(
+                            child: InkWell(
+                                onTap: () => showDialog(
+                                    context: context,
+                                    builder: (_) => ProductDetails(
+                                        productID: product.productID)),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        // gradient: LinearGradient(
+                                        //     begin: Alignment.topCenter,
+                                        //     end: Alignment.bottomCenter,
+                                        //     colors: [
+                                        //       Colors.transparent,
+                                        //       Colors.black.withOpacity(0.7)
+                                        //     ]),
+                                        image: DecorationImage(
+                                            image:
+                                                NetworkImage(product.imageURL),
+                                            fit: BoxFit.cover,
+                                            colorFilter: ColorFilter.mode(
+                                                Colors.black.withOpacity(0.3),
+                                                BlendMode.darken))),
+                                    child: Center(
+                                        child: Text(product.productName,
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                            textAlign: TextAlign.center)))));
+                      })),
               actions: [
                 ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),

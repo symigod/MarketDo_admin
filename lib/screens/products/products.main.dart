@@ -10,17 +10,6 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
-  Widget _rowHeader({int? flex, String? text}) => Expanded(
-      flex: flex!,
-      child: Container(
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade500),
-              color: Colors.grey.shade400),
-          child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(text!,
-                  style: const TextStyle(fontWeight: FontWeight.bold)))));
-
   bool? selectedButton;
 
   @override

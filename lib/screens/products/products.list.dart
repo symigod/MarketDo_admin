@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:marketdo_admin/screens/products/product.details.dart';
 import 'package:marketdo_admin/widgets/api_widgets.dart';
 
 class ProductList extends StatefulWidget {
@@ -65,6 +66,14 @@ class _ProductListState extends State<ProductList> {
                     }
                     return emptyWidget('VENDOR NOT FOUND');
                   })),
+              DataCell(ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.teal)),
+                  onPressed: () => showDialog(
+                      context: context,
+                      builder: (_) =>
+                          ProductDetails(productID: data['productID'])),
+                  child: const Icon(Icons.visibility, color: Colors.white)))
               // DataCell(data['isApproved'] == true
               //     ? ElevatedButton(
               //         style: ButtonStyle(
@@ -126,6 +135,7 @@ class _ProductListState extends State<ProductList> {
                 DataColumn(label: Text('DESCRIPTION')),
                 DataColumn(label: Text('PRICE')),
                 DataColumn(label: Text('VENDOR')),
+                DataColumn(label: Text('ACTION'))
                 // DataColumn(label: Text('STATUS'))
               ],
               rows: rows);

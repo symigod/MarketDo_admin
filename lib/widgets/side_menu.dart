@@ -6,8 +6,8 @@ import 'package:marketdo_admin/main.dart';
 import 'package:marketdo_admin/screens/categories/categories.screen.dart';
 import 'package:marketdo_admin/screens/customers/customers.screen.dart';
 import 'package:marketdo_admin/screens/dashboard.dart';
-import 'package:marketdo_admin/screens/products/products.screen.dart';
-import 'package:marketdo_admin/screens/vendors/vendors.screen.dart';
+import 'package:marketdo_admin/screens/products/products.main.dart';
+import 'package:marketdo_admin/screens/vendors/vendors.main.dart';
 import 'package:marketdo_admin/widgets/dialogs.dart';
 
 class SideMenu extends StatefulWidget {
