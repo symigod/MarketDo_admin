@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 Widget confirmDialog(
         context, String title, String message, void Function() onPressed) =>
@@ -27,3 +29,6 @@ Widget successDialog(BuildContext context, String message) =>
 
 String generateToken() => String.fromCharCodes(
     List.generate(100, (index) => Random().nextInt(33) + 89));
+
+String dateTimeToString(Timestamp timestamp) =>
+    DateFormat('MMM dd, yyyy').format(timestamp.toDate()).toString();

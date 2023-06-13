@@ -1,42 +1,62 @@
-class Product {
-  Product ({
-      this.productName,
-    this.description,
-    this.brand,
-    this.otherDetails,
-    this.unit,
-     this.approved}
-  );
+// ignore_for_file: prefer_typing_uninitialized_variables
 
-  Product.fromJson(Map<String, Object?> json)
-    : this(
-        
-        productName: json['productName']! as String,     
-        description: json['description']==null ? null : json['description']! as String,
-        brand: json['brand']==null ? null : json['brand']! as String,
-        otherDetails: json['otherDetails']==null? null : json['otherDetails']! as String,
-        unit: json['unit'] == null ? null : json['unit']! as String,
-        approved: json['approved']! as bool,
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-      );
-   
-    final String? productName; 
-    final String? description;
-    final String? brand;
-    final String? otherDetails;
-    final String? unit;
-    final bool? approved;
+class ProductModel {
+  final category;
+  final description;
+  final imageURL;
+  final productID;
+  final productName;
+  final regularPrice;
+  final shippingCharge;
+  final stockOnHand;
+  final subcategory;
+  final unit;
+  final vendorID;
 
-  Map<String, Object?> toJson() {
-    return {
-      
-    'productName': productName, 
-     'description': description,
-     'brand': brand,
-     'otherDetails': otherDetails,
-     'unit': unit,
-     'approved': approved,
-    };
+  ProductModel({
+    required this.category,
+    required this.description,
+    required this.imageURL,
+    required this.productID,
+    required this.productName,
+    required this.regularPrice,
+    required this.shippingCharge,
+    required this.stockOnHand,
+    required this.subcategory,
+    required this.unit,
+    required this.vendorID,
+  });
+
+  factory ProductModel.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = (doc.data() as Map<String, dynamic>);
+    return ProductModel(
+      category: data['category'] ?? '',
+      description: data['description'] ?? '',
+      imageURL: data['imageURL'] ?? '',
+      productID: data['productID'],
+      productName: data['productName'] ?? '',
+      regularPrice: data['regularPrice'] ?? 0.0,
+      shippingCharge: data['shippingCharge'] ?? 0.0,
+      stockOnHand: data['stockOnHand'] ?? 0.0,
+      subcategory: data['subcategory'] ?? '',
+      unit: data['unit'] ?? '',
+      vendorID: data['vendorID'] ?? '',
+    );
   }
 
+  Map<String, dynamic> toFirestore() => {
+        'category': category,
+        'description': description,
+        'imageURL': imageURL,
+        'productID': productID,
+        'productName': productName,
+        'regularPrice': regularPrice,
+        'shippingCharge': shippingCharge,
+        'stockOnHand': stockOnHand,
+        'subcategory': subcategory,
+        'unit': unit,
+        'vendorID': vendorID,
+      };
 }

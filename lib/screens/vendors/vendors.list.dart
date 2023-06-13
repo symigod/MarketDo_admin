@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:marketdo_admin/screens/vendors/vendor.card.dart';
+import 'package:marketdo_admin/screens/vendors/vendor.products.dart';
 import 'package:marketdo_admin/widgets/api_widgets.dart';
 
 class VendorsList extends StatefulWidget {
@@ -30,14 +31,23 @@ class _VendorsListState extends State<VendorsList> {
           final List<DataRow> rows = vs.data!.docs.map((document) {
             final Map<String, dynamic> data = document.data();
             return DataRow(cells: [
-              DataCell(Wrap(children: [
-                SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: Image.network(data['logo'], fit: BoxFit.cover)))
-              ])),
+              DataCell(Container(
+                  height: 40,
+                  width: 40,
+                  margin: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                          color: data['isOnline'] ? Colors.green : Colors.red,
+                          width: 2)),
+                  child: Container(
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2)),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: Image.network(data['logo'],
+                              fit: BoxFit.cover))))),
               DataCell(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(data['businessName'], softWrap: true))),
@@ -86,8 +96,8 @@ class _VendorsListState extends State<VendorsList> {
                     onPressed: () => showDialog(
                         context: context,
                         builder: (_) =>
-                            VendorDetailsCard(vendorID: data['vendorID'])),
-                    child: const Icon(Icons.shopping_cart, color: Colors.white))
+                            VendorProducts(vendorID: data['vendorID'])),
+                    child: const Icon(Icons.shopping_bag, color: Colors.white))
               ]))
             ]);
           }).toList();

@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:marketdo_admin/main.dart';
 import 'package:marketdo_admin/screens/categories/categories.screen.dart';
 import 'package:marketdo_admin/screens/customers/customers.screen.dart';
-import 'package:marketdo_admin/screens/dashboard_screen.dart';
+import 'package:marketdo_admin/screens/dashboard.dart';
 import 'package:marketdo_admin/screens/products/products.screen.dart';
 import 'package:marketdo_admin/screens/vendors/vendors.screen.dart';
 import 'package:marketdo_admin/widgets/dialogs.dart';
@@ -59,6 +59,7 @@ class _SideMenuState extends State<SideMenu> {
                 onPressed: () => logout(), icon: const Icon(Icons.exit_to_app))
           ]),
       sideBar: SideBar(
+          activeBackgroundColor: Colors.greenAccent,
           items: const [
             AdminMenuItem(
                 title: 'Dashboard',
@@ -68,12 +69,6 @@ class _SideMenuState extends State<SideMenu> {
                 title: 'Categories',
                 route: CategoryScreen.id,
                 icon: Icons.category),
-            // AdminMenuItem(title: 'Categories', icon: Icons.category, children: [
-            //   AdminMenuItem(title: 'Category', route: CategoryScreen.id),
-            //   AdminMenuItem(
-            //       title: 'Main Category', route: MainCategoryScreen.id),
-            //   AdminMenuItem(title: 'Sub Category', route: SubCategoryScreen.id)
-            // ]),
             AdminMenuItem(
                 title: 'Vendors', route: VendorScreen.id, icon: Icons.store),
             AdminMenuItem(
@@ -83,7 +78,7 @@ class _SideMenuState extends State<SideMenu> {
             AdminMenuItem(
                 title: 'Products',
                 route: ProductScreen.id,
-                icon: Icons.shopping_cart)
+                icon: Icons.shopping_bag)
           ],
           selectedRoute: SideMenu.id,
           onSelected: (item) => screenSelector(item),

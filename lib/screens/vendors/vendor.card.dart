@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:marketdo_admin/widgets/api_widgets.dart';
+import 'package:marketdo_admin/widgets/dialogs.dart';
 
 class VendorDetailsCard extends StatefulWidget {
   final String vendorID;
@@ -63,7 +64,7 @@ class _VendorDetailsCardState extends State<VendorDetailsCard> {
                                     title: Text(vendor[index]['businessName']),
                                     subtitle: Text(vendor[index]['vendorID'])),
                                 ListTile(
-                                    leading: const Icon(Icons.comment),
+                                    leading: const Icon(Icons.perm_phone_msg),
                                     title: Text(vendor[index]['email']),
                                     subtitle: Text(vendor[index]['mobile'])),
                                 ListTile(
@@ -71,16 +72,10 @@ class _VendorDetailsCardState extends State<VendorDetailsCard> {
                                     title: Text(vendor[index]['address']),
                                     subtitle: Text(vendor[index]['landMark'])),
                                 ListTile(
-                                    leading: const Icon(Icons.location_on),
-                                    title: Text(
-                                        'TAX REGISTERED: ${vendor[index]['isTaxRegistered'] == true ? 'YES' : 'NO'}'),
-                                    subtitle: Text(
-                                        'PIN CODE: ${vendor[index]['pinCode']}')),
-                                ListTile(
-                                    leading: const Icon(Icons.location_on),
+                                    leading: const Icon(Icons.date_range),
                                     title: const Text('REGISTERED ON:'),
-                                    subtitle:
-                                        Text('TIN: ${vendor[index]['tin']}')),
+                                    subtitle: Text(dateTimeToString(
+                                        vendor[index]['registeredOn']))),
                               ])),
                       actions: [
                         ElevatedButton(

@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:marketdo_admin/models/product.model.dart';
 import 'package:marketdo_admin/widgets/api_widgets.dart';
 
 class VendorProducts extends StatefulWidget {
@@ -25,58 +27,89 @@ class _VendorProductsState extends State<VendorProducts> {
           return loadingWidget();
         }
         if (vps.hasData) {
-          final List<DocumentSnapshot> product = vps.data!.docs;
-          return ListView.builder(
-              shrinkWrap: true,
-              itemCount: product.length,
-              itemBuilder: (context, index) => AlertDialog(
-                      titlePadding: const EdgeInsets.all(5),
-                      title: Container(
-                          padding: const EdgeInsets.all(20),
-                          height: 200,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: NetworkImage(
-                                      '${product[index]['shopImage']}'),
-                                  fit: BoxFit.cover))),
-                      content: SizedBox(
-                          width: MediaQuery.of(context).size.width / 3,
-                          child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ListTile(
-                                    leading: const Icon(Icons.store),
-                                    title: Text(product[index]['businessName']),
-                                    subtitle: Text(product[index]['vendorID'])),
-                                ListTile(
-                                    leading: const Icon(Icons.comment),
-                                    title: Text(product[index]['email']),
-                                    subtitle: Text(product[index]['mobile'])),
-                                ListTile(
-                                    leading: const Icon(Icons.location_on),
-                                    title: Text(product[index]['address']),
-                                    subtitle: Text(product[index]['landMark'])),
-                                ListTile(
-                                    leading: const Icon(Icons.location_on),
-                                    title: Text(
-                                        'TAX REGISTERED: ${product[index]['isTaxRegistered'] == true ? 'YES' : 'NO'}'),
-                                    subtitle: Text(
-                                        'PIN CODE: ${product[index]['pinCode']}')),
-                                ListTile(
-                                    leading: const Icon(Icons.location_on),
-                                    title: const Text('REGISTERED ON:'),
-                                    subtitle:
-                                        Text('TIN: ${product[index]['tin']}')),
-                              ])),
-                      actions: [
-                        ElevatedButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: const Padding(
-                                padding: EdgeInsets.all(10),
-                                child: Text('Close')))
-                      ]));
+          return AlertDialog(
+              titlePadding: EdgeInsets.zero,
+              title: FutureBuilder(
+                  future: FirebaseFirestore.instance
+                      .collection('vendors')
+                      .where('vendorID', isEqualTo: widget.vendorID)
+                      .get(),
+                  builder: (context, vs) {
+                    if (vs.hasError) {
+                      return errorWidget(vs.error.toString());
+                    }
+                    if (vs.connectionState == ConnectionState.waiting) {
+                      return loadingWidget();
+                    }
+                    if (vs.data!.docs.isNotEmpty) {
+                      return Card(
+                          color: Colors.green,
+                          margin: EdgeInsets.zero,
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(5),
+                                  topRight: Radius.circular(5))),
+                          child: Center(
+                              child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text(
+                                      'Products of\n${vs.data!.docs[0]['businessName']}',
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                      textAlign: TextAlign.center))));
+                    } else {
+                      return emptyWidget('VENDOR NOT FOUND');
+                    }
+                  }),
+              content: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 7),
+                  itemCount: vps.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    List<ProductModel> productModel = vps.data!.docs
+                        .map((doc) => ProductModel.fromFirestore(doc))
+                        .toList();
+                    var product = productModel[index];
+                    return InkWell(
+                        // onTap: () => Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (_) => ProductDetailScreen(
+                        //             productID: product.productID))),
+                        child: Container(
+                            padding: const EdgeInsets.all(8),
+                            height: 80,
+                            width: 80,
+                            child: Column(children: [
+                              ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: SizedBox(
+                                      height: 90,
+                                      width: 90,
+                                      child: CachedNetworkImage(
+                                          imageUrl: product.imageURL,
+                                          fit: BoxFit.cover))),
+                              const SizedBox(height: 10),
+                              Text(product.productName,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 10),
+                                  maxLines: 2)
+                            ])));
+                  },
+                ),
+              ),
+              actions: [
+                ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Padding(
+                        padding: EdgeInsets.all(10), child: Text('Close')))
+              ]);
         }
-        return emptyWidget('VENDOR NOT FOUND');
+        return emptyWidget('NO PRODUCTS FOUND');
       });
 }
