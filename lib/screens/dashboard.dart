@@ -121,13 +121,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       if (vs.connectionState == ConnectionState.waiting) {
                         return loadingWidget();
                       }
-                      if (vs.hasData) {
+                      if (vs.data!.docs.isNotEmpty) {
                         return analyticWidget(
                             title: "Top Sellers",
                             value:
                                 '${vs.data!.docs[0]['businessName']}\n$maxOccurrences orders sold');
                       }
-                      return emptyWidget('VENDOR NOT FOUND');
+                      return const SizedBox.shrink();
                     });
               }
               return const SizedBox();
