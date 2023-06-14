@@ -46,8 +46,8 @@ class _VendorsTableState extends State<VendorsTable> {
                           border: Border.all(color: Colors.white, width: 2)),
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(50),
-                          child: CachedNetworkImage(
-                              imageUrl: data['logo'], fit: BoxFit.cover))))),
+                          child: CachedNetworkImage(imageUrl: data['logo'],
+                              fit: BoxFit.cover))))),
               DataCell(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(data['businessName'], softWrap: true))),
