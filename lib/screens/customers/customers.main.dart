@@ -116,14 +116,23 @@ class _CustomerListState extends State<CustomerList> {
           final Map<String, dynamic> data =
               document.data()! as Map<String, dynamic>;
           return DataRow(cells: [
-            DataCell(Wrap(children: [
-              SizedBox(
-                  height: 40,
-                  width: 40,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.network(data['logo'], fit: BoxFit.cover)))
-            ])),
+            DataCell(Container(
+                height: 40,
+                width: 40,
+                margin: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                        color: data['isOnline'] ? Colors.green : Colors.red,
+                        width: 2)),
+                child: Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2)),
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child:
+                            Image.network(data['logo'], fit: BoxFit.cover))))),
             DataCell(Align(
                 alignment: Alignment.centerLeft,
                 child: Text(data['name'], softWrap: true))),

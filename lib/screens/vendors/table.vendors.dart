@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:marketdo_admin/screens/vendors/card.vendor.dart';
@@ -5,15 +6,15 @@ import 'package:marketdo_admin/screens/vendors/products.vendor.dart';
 import 'package:marketdo_admin/widgets/snapshots.dart';
 import 'package:marketdo_admin/firebase.services.dart';
 
-class VendorsList extends StatefulWidget {
+class VendorsTable extends StatefulWidget {
   final bool? isApproved;
-  const VendorsList({this.isApproved, Key? key}) : super(key: key);
+  const VendorsTable({this.isApproved, Key? key}) : super(key: key);
 
   @override
-  State<VendorsList> createState() => _VendorsListState();
+  State<VendorsTable> createState() => _VendorsTableState();
 }
 
-class _VendorsListState extends State<VendorsList> {
+class _VendorsTableState extends State<VendorsTable> {
   @override
   Widget build(BuildContext context) => StreamBuilder(
       stream: vendorsCollection
@@ -45,8 +46,8 @@ class _VendorsListState extends State<VendorsList> {
                           border: Border.all(color: Colors.white, width: 2)),
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(50),
-                          child: Image.network(data['logo'],
-                              fit: BoxFit.cover))))),
+                          child: CachedNetworkImage(
+                              imageUrl: data['logo'], fit: BoxFit.cover))))),
               DataCell(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(data['businessName'], softWrap: true))),
@@ -97,7 +98,7 @@ class _VendorsListState extends State<VendorsList> {
                         context: context,
                         builder: (_) =>
                             VendorProducts(vendorID: data['vendorID'])),
-                    child: const Icon(Icons.shopping_bag, color: Colors.white))
+                    child: const Icon(Icons.store, color: Colors.white))
               ]))
             ]);
           }).toList();

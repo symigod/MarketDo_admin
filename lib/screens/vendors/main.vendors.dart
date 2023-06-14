@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:marketdo_admin/screens/vendors/list.vendor.dart';
+import 'package:marketdo_admin/screens/vendors/table.vendors.dart';
 
 class VendorScreen extends StatefulWidget {
   static const String id = 'vendors-screen';
@@ -57,6 +57,6 @@ class _VendorScreenState extends State<VendorScreen> {
               ])
             ]),
             const SizedBox(height: 10),
-            VendorsList(isApproved: selectedButton)
+            VendorsTable(isApproved: selectedButton)
           ]));
 }
