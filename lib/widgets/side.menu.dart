@@ -27,9 +27,13 @@ class _SideMenuState extends State<SideMenu> {
       case DashboardScreen.id:
         setState(() => _selectedScreen = const DashboardScreen());
         break;
+      // case AnnouncementsScreen.id:
+      //   setState(() => _selectedScreen = const AnnouncementsScreen());
+      //   break;
       case CategoryScreen.id:
         setState(() => _selectedScreen = const CategoryScreen());
         break;
+
       // case MainCategoryScreen.id:
       //   setState(() => _selectedScreen = const MainCategoryScreen());
       //   break;
@@ -65,6 +69,10 @@ class _SideMenuState extends State<SideMenu> {
                 title: 'Dashboard',
                 route: DashboardScreen.id,
                 icon: Icons.dashboard),
+            // AdminMenuItem(
+            //     title: 'Announcements',
+            //     route: AnnouncementsScreen.id,
+            //     icon: Icons.announcement),
             AdminMenuItem(
                 title: 'Categories',
                 route: CategoryScreen.id,

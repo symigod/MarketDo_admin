@@ -4,7 +4,7 @@ import 'package:marketdo_admin/widgets/snapshots.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class DashboardScreen extends StatefulWidget {
-  static const String id = 'Dashboard';
+  static const String id = 'dashboard-screen';
 
   const DashboardScreen({super.key});
 
