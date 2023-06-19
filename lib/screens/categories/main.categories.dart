@@ -51,112 +51,110 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   }
                   if (cs.hasData) {
                     var category = cs.data!.docs;
-                    return LayoutBuilder(builder: (context, constraints) {
-                      return GridView.builder(
-                          shrinkWrap: true,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount:
-                                      MediaQuery.of(context).size.width > 1000
-                                          ? 3
-                                          : 1,
-                                  mainAxisSpacing: 10,
-                                  crossAxisSpacing: 10),
-                          itemCount: category.length,
-                          itemBuilder: (context, index) {
-                            var categories = category[index];
-                            List<String> subcategories =
-                                List<String>.from(categories['subcategories']);
-                            subcategories.sort((a, b) =>
-                                a.toLowerCase().compareTo(b.toLowerCase()));
-                            return Card(
-                                elevation: 10,
-                                shadowColor: Colors.green.shade900,
-                                shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                        color: Colors.green.shade900, width: 2),
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                          height:
-                                              MediaQuery.of(context).size.height /
-                                                  4,
-                                          width: MediaQuery.of(context).size.width /
-                                              3,
-                                          child: ClipRRect(
-                                              borderRadius: const BorderRadius.only(
-                                                  topLeft: Radius.circular(5),
-                                                  topRight: Radius.circular(5)),
-                                              child: categories['category'] ==
-                                                      'Others'
-                                                  ? Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Image.network(categories['imageURL'],
-                                                          fit:
-                                                              BoxFit.fitHeight))
-                                                  : CachedNetworkImage(
-                                                      imageUrl: categories['imageURL'],
-                                                      fit: BoxFit.cover))),
-                                      ListTile(
-                                          dense: true,
-                                          title: Text(categories['category'],
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold)),
-                                          trailing: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                IconButton(
-                                                    icon: Icon(Icons.edit,
-                                                        color: Colors
-                                                            .blue.shade900),
-                                                    onPressed: () => showDialog(
-                                                        context: context,
-                                                        builder: (_) =>
-                                                            EditCategoryDialog(
-                                                                categoryID:
-                                                                    categories[
-                                                                        'categoryID']))),
-                                                IconButton(
-                                                    icon: Icon(Icons.delete,
-                                                        color: Colors
-                                                            .red.shade900),
-                                                    onPressed: () =>
-                                                        deleteCategory(
-                                                            categories[
-                                                                'categoryID']))
-                                              ])),
-                                      Expanded(
-                                          child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 8),
-                                              child: Wrap(
-                                                  alignment:
-                                                      WrapAlignment.start,
-                                                  spacing: 4,
-                                                  runSpacing: 4,
-                                                  children: subcategories
-                                                      .map((subcategory) => Chip(
-                                                          label: Text(
-                                                              subcategory,
-                                                              style: const TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold)),
-                                                          backgroundColor:
-                                                              Colors
-                                                                  .greenAccent))
-                                                      .toList()))),
-                                      const SizedBox(height: 10)
-                                    ]));
-                          });
-                    });
+                    return LayoutBuilder(
+                        builder: (context, constraints) => Wrap(
+                                children:
+                                    List.generate(category.length, (index) {
+                              var categories = category[index];
+                              List<String> subcategories = List<String>.from(
+                                  categories['subcategories']);
+                              subcategories.sort((a, b) =>
+                                  a.toLowerCase().compareTo(b.toLowerCase()));
+                              return SizedBox(
+                                  width: constraints.maxWidth / 3,
+                                  child: Card(
+                                      elevation: 10,
+                                      shadowColor: Colors.green.shade900,
+                                      shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              color: Colors.green.shade900,
+                                              width: 2),
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                                height: MediaQuery.of(context).size.height /
+                                                    4,
+                                                width: MediaQuery.of(context).size.width /
+                                                    3,
+                                                child: ClipRRect(
+                                                    borderRadius: const BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(5),
+                                                        topRight:
+                                                            Radius.circular(5)),
+                                                    child: categories['category'] == 'Others'
+                                                        ? Padding(
+                                                            padding: const EdgeInsets.all(
+                                                                8.0),
+                                                            child: Image.network(categories['imageURL'],
+                                                                fit: BoxFit
+                                                                    .fitHeight))
+                                                        : CachedNetworkImage(
+                                                            imageUrl: categories['imageURL'],
+                                                            fit: BoxFit.cover))),
+                                            ListTile(
+                                                dense: true,
+                                                title: Text(
+                                                    categories['category'],
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                                trailing: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      InkWell(
+                                                          onTap: () => showDialog(
+                                                              context: context,
+                                                              builder: (_) =>
+                                                                  EditCategoryDialog(
+                                                                      categoryID:
+                                                                          categories[
+                                                                              'categoryID'])),
+                                                          child: Icon(
+                                                              Icons.edit,
+                                                              color: Colors.blue
+                                                                  .shade900)),
+                                                      InkWell(
+                                                          onTap: () =>
+                                                              deleteCategory(
+                                                                  categories[
+                                                                      'categoryID']),
+                                                          child: Icon(
+                                                              Icons.delete,
+                                                              color: Colors.red
+                                                                  .shade900))
+                                                    ])),
+                                            Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8),
+                                                child: Wrap(
+                                                    alignment:
+                                                        WrapAlignment.start,
+                                                    spacing: 4,
+                                                    runSpacing: 4,
+                                                    children: subcategories
+                                                        .map((subcategory) => Chip(
+                                                            label: Text(
+                                                                subcategory,
+                                                                style: const TextStyle(
+                                                                    fontSize:
+                                                                        12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .greenAccent))
+                                                        .toList())),
+                                            const SizedBox(height: 10)
+                                          ])));
+                            })));
                   }
                   return emptyWidget('NO CATEGORIES FOUND');
                 })
