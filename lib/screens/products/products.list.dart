@@ -41,7 +41,6 @@ class _ProductListState extends State<ProductList> {
               DataCell(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(data['productName'], softWrap: true))),
-              // DataCell(Text(data['brand'], softWrap: true)),
               DataCell(Text(data['category'], softWrap: true)),
               DataCell(Text(data['description'], softWrap: true)),
               DataCell(Text(
@@ -124,28 +123,16 @@ class _ProductListState extends State<ProductList> {
                   fontFamily: 'Lato',
                   fontWeight: FontWeight.bold),
               columns: const [
-                DataColumn(label: Text('IMAGES')),
-                DataColumn(label: Text('PRODUCT NAME')),
-                // DataColumn(label: Text('BRAND')),
+                DataColumn(label: Text('IMAGE')),
+                DataColumn(label: Text('PRODUCT')),
                 DataColumn(label: Text('CATEGORY')),
                 DataColumn(label: Text('DESCRIPTION')),
                 DataColumn(label: Text('PRICE')),
                 DataColumn(label: Text('VENDOR')),
                 DataColumn(label: Text('ACTION'))
-                // DataColumn(label: Text('STATUS'))
               ],
               rows: rows);
         }
         return emptyWidget('NO RECORD FOUND');
       });
-
-  Widget _productData({int? flex, String? text, Widget? widget}) => Expanded(
-      flex: flex!,
-      child: Container(
-          height: 66,
-          decoration:
-              BoxDecoration(border: Border.all(color: Colors.grey.shade400)),
-          child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: widget ?? Text(text!))));
 }

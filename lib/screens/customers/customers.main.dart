@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:marketdo_admin/screens/customers/card.customer.dart';
 import 'package:marketdo_admin/widgets/snapshots.dart';
 import 'package:marketdo_admin/widgets/dialogs.dart';
 import 'package:marketdo_admin/firebase.services.dart';
@@ -136,10 +137,20 @@ class _CustomerListState extends State<CustomerList> {
             DataCell(Align(
                 alignment: Alignment.centerLeft,
                 child: Text(data['name'], softWrap: true))),
-            DataCell(Text(data['mobile'], softWrap: true)),
-            DataCell(Text(data['email'], softWrap: true)),
-            DataCell(Text(data['address'], softWrap: true)),
-            DataCell(Text(data['address'], softWrap: true))
+            DataCell(Text('${data['mobile']}\n${data['email']}', softWrap: true)),
+            DataCell(Text('${data['address']}\n(${data['landMark']})', softWrap: true)),
+            DataCell(Center(
+              child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.teal)),
+                        onPressed: () => showDialog(
+                            context: context,
+                            builder: (_) =>
+                                CustomerDetailsCard(customerID: data['customerID'])),
+                        child:
+                            const Icon(Icons.visibility, color: Colors.white)),
+            ))
             // DataCell(Center(
             //     child: ElevatedButton(
             //         style: ElevatedButton.styleFrom(
@@ -164,10 +175,9 @@ class _CustomerListState extends State<CustomerList> {
             columns: const [
               DataColumn(label: Text('IMAGE', textAlign: TextAlign.center)),
               DataColumn(label: Text('NAME')),
-              DataColumn(label: Text('MOBILE')),
-              DataColumn(label: Text('EMAIL')),
+              DataColumn(label: Text('CONTACTS')),
               DataColumn(label: Text('ADDRESS')),
-              DataColumn(label: Text('ACTION'))
+              DataColumn(label: Text('ACTIONS'))
               // DataColumn(
               //     label: Center(
               //         child: Text('STATUS', textAlign: TextAlign.center)))

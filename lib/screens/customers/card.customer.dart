@@ -4,19 +4,19 @@ import 'package:marketdo_admin/widgets/snapshots.dart';
 import 'package:marketdo_admin/widgets/dialogs.dart';
 import 'package:marketdo_admin/firebase.services.dart';
 
-class VendorDetailsCard extends StatefulWidget {
-  final String vendorID;
-  const VendorDetailsCard({super.key, required this.vendorID});
+class CustomerDetailsCard extends StatefulWidget {
+  final String customerID;
+  const CustomerDetailsCard({super.key, required this.customerID});
 
   @override
-  State<VendorDetailsCard> createState() => _VendorDetailsCardState();
+  State<CustomerDetailsCard> createState() => _CustomerDetailsCardState();
 }
 
-class _VendorDetailsCardState extends State<VendorDetailsCard> {
+class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
   @override
   Widget build(BuildContext context) => StreamBuilder(
-      stream: vendorsCollection
-          .where('vendorID', isEqualTo: widget.vendorID)
+      stream: customersCollection
+          .where('customerID', isEqualTo: widget.customerID)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -39,7 +39,7 @@ class _VendorDetailsCardState extends State<VendorDetailsCard> {
                             decoration: BoxDecoration(
                                 image: DecorationImage(
                                     image: NetworkImage(
-                                        '${vendor[index]['shopImage']}'),
+                                        '${vendor[index]['coverPhoto']}'),
                                     fit: BoxFit.cover))),
                         Container(
                             height: 175,
@@ -56,13 +56,13 @@ class _VendorDetailsCardState extends State<VendorDetailsCard> {
                       content: SizedBox(
                           width: MediaQuery.of(context).size.width / 3,
                           child: Column(
-                              // mainAxisSize: MainAxisSize.min,
+                              mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ListTile(
                                     leading: const Icon(Icons.store),
-                                    title: Text(vendor[index]['businessName']),
-                                    subtitle: Text(vendor[index]['vendorID'])),
+                                    title: Text(vendor[index]['name']),
+                                    subtitle: Text(vendor[index]['customerID'])),
                                 ListTile(
                                     leading: const Icon(Icons.perm_phone_msg),
                                     title: Text(vendor[index]['email']),
@@ -85,6 +85,6 @@ class _VendorDetailsCardState extends State<VendorDetailsCard> {
                                 child: Text('Close')))
                       ]));
         }
-        return emptyWidget('VENDOR NOT FOUND');
+        return emptyWidget('CUSTOMER NOT FOUND');
       });
 }
