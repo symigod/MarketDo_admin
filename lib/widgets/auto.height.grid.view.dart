@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AutoHeightGridView extends StatelessWidget {
   final List<Widget> children;
 
-  AutoHeightGridView({required this.children});
+  const AutoHeightGridView({super.key, required this.children});
 
   @override
   Widget build(BuildContext context) =>
