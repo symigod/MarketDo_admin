@@ -158,7 +158,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             textStyle: const TextStyle(
                                 fontFamily: 'Lato',
                                 fontWeight: FontWeight.bold)),
-                        palette: [Colors.green, Colors.green.shade900],
+                        palette: [Colors.pink.shade900, Colors.blue.shade900],
                         tooltipBehavior: TooltipBehavior(enable: false),
                         series: <CircularSeries<CustomerVendorData, String>>[
                           PieSeries<CustomerVendorData, String>(
