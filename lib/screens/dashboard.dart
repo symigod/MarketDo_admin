@@ -40,16 +40,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   List<Color> colorPalette = [
-    Colors.green.shade800,
-    Colors.teal,
-    Colors.cyan,
-    Colors.brown,
     Colors.red,
     Colors.orange,
     Colors.yellow,
+    Colors.green,
     Colors.blue,
+    Colors.indigo,
     Colors.purple,
-    Colors.pink
+    Colors.pink,
+    Colors.brown,
+    Colors.black
   ];
 
   @override
@@ -120,7 +120,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             fontWeight: FontWeight.bold)),
                                     primaryXAxis: CategoryAxis(),
                                     primaryYAxis: NumericAxis(),
-                                    palette: colorPalette,
                                     tooltipBehavior: TooltipBehavior(
                                         enable: true,
                                         textStyle:
@@ -129,7 +128,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         format: 'point.x\npoint.y orders sold'),
                                     series: <BarSeries<VendorData, String>>[
                                       BarSeries<VendorData, String>(
-                                          // color: Colors.green,
+                                          color: Colors.green.shade900,
                                           dataSource: vendorDataList,
                                           xValueMapper: (VendorData data, _) =>
                                               data.vendorName,
@@ -171,9 +170,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   '${datum.x}: ${datum.y}',
                               dataLabelSettings: const DataLabelSettings(
                                   isVisible: true,
-                                  labelPosition: ChartDataLabelPosition.inside,
-                                  textStyle: TextStyle(
-                                      fontFamily: 'Lato')))
+                                  labelPosition: ChartDataLabelPosition.outside,
+                                  useSeriesColor: true,
+                                  textStyle: TextStyle(fontFamily: 'Lato')))
                         ]))),
             // PRODUCT CATEGORIES
             StreamBuilder(
@@ -212,15 +211,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         fontFamily: 'Lato',
                                         fontWeight: FontWeight.bold)),
                                 palette: colorPalette,
-                                legend: Legend(isVisible: true),
-                                tooltipBehavior: TooltipBehavior(
-                                    enable: true,
-                                    textStyle:
-                                        const TextStyle(fontFamily: 'Lato')),
+                                legend: Legend(
+                                    isVisible: true,
+                                    toggleSeriesVisibility: false,
+                                    overflowMode: LegendItemOverflowMode.wrap),
+                                tooltipBehavior: TooltipBehavior(enable: false),
                                 series: <CircularSeries<CategoryData, String>>[
                                   DoughnutSeries<CategoryData, String>(
                                       strokeColor: Colors.white,
                                       strokeWidth: 2,
+                                      dataLabelSettings:
+                                          const DataLabelSettings(
+                                              isVisible: true,
+                                              labelPosition:
+                                                  ChartDataLabelPosition
+                                                      .outside,
+                                              textStyle: TextStyle(
+                                                  fontFamily: 'Lato',
+                                                  fontWeight: FontWeight.bold)),
                                       dataSource: categoryDataList,
                                       xValueMapper: (CategoryData data, _) =>
                                           data.category,
