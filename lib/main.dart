@@ -125,6 +125,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
               context, MaterialPageRoute(builder: (_) => const SideMenu())))
       : showDialog(
           context: context,
+          barrierDismissible: false,
           builder: (_) => AlertDialog(
                 title: Text('ACCESS DENIED',
                     style: TextStyle(color: Colors.red.shade900)),

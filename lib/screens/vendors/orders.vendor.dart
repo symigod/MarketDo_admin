@@ -16,143 +16,145 @@ class VendorOrders extends StatefulWidget {
 
 class _VendorOrdersState extends State<VendorOrders> {
   @override
-  Widget build(BuildContext context) => StreamBuilder(
-      stream: ordersCollection
-          .where('vendorID', isEqualTo: widget.vendorID)
-          .where('isPending', isEqualTo: true)
-          .orderBy('orderedOn', descending: true)
-          .snapshots(),
-      builder: (context, os) {
-        if (os.hasError) {
-          return errorWidget(os.error.toString());
-        }
-        if (os.connectionState == ConnectionState.waiting) {
-          return loadingWidget();
-        }
-        if (os.data!.docs.isNotEmpty) {
-          var order = os.data!.docs;
-          return AlertDialog(
-            titlePadding: EdgeInsets.zero,
-            title: StreamBuilder(
-                stream: vendorsCollection
-                    .where('vendorID', isEqualTo: widget.vendorID)
-                    .snapshots(),
-                builder: (context, vs) {
-                  if (vs.hasError) {
-                    return errorWidget(vs.error.toString());
-                  }
-                  if (vs.connectionState == ConnectionState.waiting) {
-                    return loadingWidget();
-                  }
-                  if (vs.data!.docs.isNotEmpty) {
-                    return Card(
-                        color: Colors.green,
-                        margin: EdgeInsets.zero,
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(5),
-                                topRight: Radius.circular(5))),
-                        child: ListTile(
-                          title: Text(
-                              'Orders sold by: ${vs.data!.docs[0]['businessName']}',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold)),
-                          trailing: InkWell(
-                              onTap: () => Navigator.of(context).pop(),
-                              child:
-                                  const Icon(Icons.close, color: Colors.white)),
-                        ));
-                  } else {
-                    return emptyWidget('VENDOR NOT FOUND');
-                  }
-                }),
-            contentPadding: EdgeInsets.zero,
-            content: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width / 3,
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: order.length,
-                  itemBuilder: (context, index) {
-                    var tileColor =
-                        index % 2 == 0 ? Colors.grey.shade100 : Colors.white;
-                    var orders = order[index];
-                    int quantity = orders['productIDs'].length;
-                    return StreamBuilder(
-                        stream: customersCollection
-                            .where('customerID',
-                                isEqualTo: orders['customerID'])
-                            .snapshots(),
-                        builder: (context, cs) {
-                          if (cs.hasError) {
-                            return errorWidget(cs.error.toString());
-                          }
-                          if (cs.connectionState == ConnectionState.waiting) {
-                            return loadingWidget();
-                          }
-                          if (cs.data!.docs.isNotEmpty) {
-                            var customer = cs.data!.docs[0];
-                            return ListTile(
-                                onTap: () => viewOrderDetails(
-                                    orders['orderID'], orders['customerID']),
-                                dense: true,
-                                tileColor: tileColor,
-                                leading: Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                            color: customer['isOnline']
-                                                ? Colors.green
-                                                : Colors.grey,
-                                            width: 2)),
-                                    child: Container(
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                                color: Colors.white, width: 2)),
-                                        child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(50),
-                                            child: CachedNetworkImage(
-                                                imageUrl: customer['logo'],
-                                                fit: BoxFit.cover)))),
-                                title: Text(customer['name'],
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                                subtitle: RichText(
-                                    text: TextSpan(
-                                        style:
-                                            const TextStyle(fontSize: 12, fontFamily: 'Lato'),
-                                        children: [
-                                      TextSpan(
-                                          text: quantity > 1
-                                              ? '$quantity items'
-                                              : '$quantity item',
-                                          style: const TextStyle(
-                                              color: Colors.grey)),
-                                      TextSpan(
-                                          text:
-                                              '\n${dateTimeToString(orders['orderedOn'])}',
-                                          style: const TextStyle(
-                                              color: Colors.blue))
-                                    ])),
-                                trailing: Text('P ${numberToString(orders['totalPayment'].toDouble())}', style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)));
-                          }
-                          return emptyWidget('VENDOR NOT FOUND');
-                        });
-                  }),
-            ),
-          );
-        }
-        return emptyWidget('VENDOR NOT FOUND');
-      });
+  Widget build(BuildContext context) => Center(
+      child: SingleChildScrollView(
+          child: StreamBuilder(
+              stream: ordersCollection
+                  .where('vendorID', isEqualTo: widget.vendorID)
+                  .where('isPending', isEqualTo: true)
+                  .orderBy('orderedOn', descending: true)
+                  .snapshots(),
+              builder: (context, os) {
+                if (os.hasError) {
+                  return errorWidget(os.error.toString());
+                }
+                if (os.connectionState == ConnectionState.waiting) {
+                  return loadingWidget();
+                }
+                if (os.data!.docs.isNotEmpty) {
+                  var order = os.data!.docs;
+                  return AlertDialog(
+                      titlePadding: EdgeInsets.zero,
+                      title: StreamBuilder(
+                          stream: vendorsCollection
+                              .where('vendorID', isEqualTo: widget.vendorID)
+                              .snapshots(),
+                          builder: (context, vs) {
+                            if (vs.hasError) {
+                              return errorWidget(vs.error.toString());
+                            }
+                            if (vs.connectionState == ConnectionState.waiting) {
+                              return loadingWidget();
+                            }
+                            if (vs.data!.docs.isNotEmpty) {
+                              return Card(
+                                  color: Colors.green,
+                                  margin: EdgeInsets.zero,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(5),
+                                          topRight: Radius.circular(5))),
+                                  child: ListTile(
+                                    title: Text(
+                                        'Orders sold by: ${vs.data!.docs[0]['businessName']}',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold)),
+                                    trailing: InkWell(
+                                        onTap: () =>
+                                            Navigator.of(context).pop(),
+                                        child: const Icon(Icons.close,
+                                            color: Colors.white)),
+                                  ));
+                            } else {
+                              return emptyWidget('VENDOR NOT FOUND');
+                            }
+                          }),
+                      contentPadding: EdgeInsets.zero,
+                      content: SizedBox(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: order.length,
+                              itemBuilder: (context, index) {
+                                var tileColor = index % 2 == 0
+                                    ? Colors.grey.shade100
+                                    : Colors.white;
+                                var orders = order[index];
+                                int quantity = orders['productIDs'].length;
+                                return StreamBuilder(
+                                    stream: customersCollection
+                                        .where('customerID',
+                                            isEqualTo: orders['customerID'])
+                                        .snapshots(),
+                                    builder: (context, cs) {
+                                      if (cs.hasError) {
+                                        return errorWidget(cs.error.toString());
+                                      }
+                                      if (cs.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return loadingWidget();
+                                      }
+                                      if (cs.data!.docs.isNotEmpty) {
+                                        var customer = cs.data!.docs[0];
+                                        return ListTile(
+                                            onTap: () => viewOrderDetails(
+                                                orders['orderID'],
+                                                orders['customerID']),
+                                            tileColor: tileColor,
+                                            leading: Container(
+                                                height: 40,
+                                                width: 40,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                        color:
+                                                            customer['isOnline']
+                                                                ? Colors.green
+                                                                : Colors.grey,
+                                                        width: 2)),
+                                                child: Container(
+                                                    decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                            color: Colors.white,
+                                                            width: 2)),
+                                                    child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(50),
+                                                        child: CachedNetworkImage(
+                                                            imageUrl:
+                                                                customer['logo'],
+                                                            fit: BoxFit.cover)))),
+                                            title: Text(customer['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+                                            subtitle: RichText(
+                                                text: TextSpan(style: const TextStyle(fontSize: 12, fontFamily: 'Lato'), children: [
+                                              TextSpan(
+                                                  text: quantity > 1
+                                                      ? '$quantity items'
+                                                      : '$quantity item',
+                                                  style: const TextStyle(
+                                                      color: Colors.grey)),
+                                              TextSpan(
+                                                  text:
+                                                      '\n${dateTimeToString(orders['orderedOn'])}',
+                                                  style: const TextStyle(
+                                                      color: Colors.blue))
+                                            ])),
+                                            trailing: Text('P ${numberToString(orders['totalPayment'].toDouble())}', style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)));
+                                      }
+                                      return emptyWidget('VENDOR NOT FOUND');
+                                    });
+                              })));
+                }
+                return emptyWidget('VENDOR NOT FOUND');
+              })));
 
   viewOrderDetails(String orderID, String customerID) => showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) => Center(
           child: SingleChildScrollView(
               child: StreamBuilder(
@@ -291,7 +293,6 @@ class _VendorOrdersState extends State<VendorOrders> {
                                                           order['unitsBought']
                                                               [pIndex];
                                                       return ListTile(
-                                                          dense: true,
                                                           leading: SizedBox(
                                                               width: 50,
                                                               child: CachedNetworkImage(
@@ -353,111 +354,120 @@ class _VendorOrdersState extends State<VendorOrders> {
 
   viewCustomerDetails(context, String customerID) => showDialog(
       context: context,
-      builder: (_) => StreamBuilder(
-          stream: customersCollection
-              .where('customerID', isEqualTo: customerID)
-              .snapshots(),
-          builder: (context, cs) {
-            if (cs.hasError) {
-              return errorWidget(cs.error.toString());
-            }
-            if (cs.connectionState == ConnectionState.waiting) {
-              return loadingWidget();
-            }
-            if (cs.data!.docs.isNotEmpty) {
-              var customer = cs.data!.docs[0];
-              return AlertDialog(
-                  scrollable: true,
-                  contentPadding: EdgeInsets.zero,
-                  content: Column(children: [
-                    SizedBox(
-                        height: 150,
-                        child: DrawerHeader(
-                            margin: EdgeInsets.zero,
-                            padding: EdgeInsets.zero,
-                            child:
-                                Stack(alignment: Alignment.center, children: [
-                              Container(
-                                  padding: const EdgeInsets.all(20),
-                                  height: 150,
-                                  decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(3),
-                                          topRight: Radius.circular(3)),
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              customer['coverPhoto']),
-                                          fit: BoxFit.cover))),
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Container(
-                                        height: 120,
-                                        width: 120,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                                color: customer['isOnline']
-                                                    ? Colors.green
-                                                    : Colors.grey,
-                                                width: 3)),
-                                        child: Container(
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                    color: Colors.white,
-                                                    width: 3)),
-                                            child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(130),
-                                                child: CachedNetworkImage(
-                                                    imageUrl: customer['logo'],
-                                                    fit: BoxFit.cover))))
-                                  ])
-                            ]))),
-                    ListTile(
-                        dense: true,
-                        isThreeLine: true,
-                        leading: const Icon(Icons.store),
-                        title: Text(customer['name'],
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: FittedBox(
-                            child: Text(
-                                'Customer ID:\n${customer['customerID']}'))),
-                    ListTile(
-                        dense: true,
-                        leading: const Icon(Icons.perm_phone_msg),
-                        title: Text(customer['mobile']),
-                        subtitle: Text(customer['email'])),
-                    ListTile(
-                        dense: true,
-                        leading: const Icon(Icons.location_on),
-                        title: Text(customer['address']),
-                        subtitle: Text(customer['landMark'])),
-                    ListTile(
-                        dense: true,
-                        leading: const Icon(Icons.date_range),
-                        title: const Text('REGISTERED ON:'),
-                        subtitle:
-                            Text(dateTimeToString(customer['registeredOn'])))
-                  ]),
-                  actionsAlignment: MainAxisAlignment.center,
-                  actions: [
-                    IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.close, color: Colors.red)),
-                    // IconButton(
-                    //     onPressed: () =>
-                    //         openURL(context, 'mailto:${customer['email']}'),
-                    //     icon: const Icon(Icons.mail, color: Colors.blue)),
-                    // IconButton(
-                    //     onPressed: () =>
-                    //         openURL(context, 'tel:${customer['mobile']}'),
-                    //     icon: const Icon(Icons.call, color: Colors.green)),
-                  ]);
-            }
-            return emptyWidget('CUSTOMER NOT FOUND');
-          }));
+      barrierDismissible: false,
+      builder: (_) => Center(
+          child: SingleChildScrollView(
+              child: StreamBuilder(
+                  stream: customersCollection
+                      .where('customerID', isEqualTo: customerID)
+                      .snapshots(),
+                  builder: (context, cs) {
+                    if (cs.hasError) {
+                      return errorWidget(cs.error.toString());
+                    }
+                    if (cs.connectionState == ConnectionState.waiting) {
+                      return loadingWidget();
+                    }
+                    if (cs.data!.docs.isNotEmpty) {
+                      var customer = cs.data!.docs[0];
+                      return AlertDialog(
+                          titlePadding: EdgeInsets.zero,
+                          title: Card(
+                              color: Colors.green,
+                              margin: EdgeInsets.zero,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(5),
+                                      topRight: Radius.circular(5))),
+                              child: ListTile(
+                                  title: const Text('Customer Details',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold)),
+                                  trailing: InkWell(
+                                      onTap: () => Navigator.pop(context),
+                                      child: const Icon(Icons.close,
+                                          color: Colors.white)))),
+                          contentPadding: EdgeInsets.zero,
+                          content: SizedBox(
+                              width: MediaQuery.of(context).size.width / 3,
+                              child: Column(children: [
+                                SizedBox(
+                                    height: 150,
+                                    child: DrawerHeader(
+                                        margin: EdgeInsets.zero,
+                                        padding: EdgeInsets.zero,
+                                        child: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              Container(
+                                                  padding:
+                                                      const EdgeInsets.all(20),
+                                                  height: 150,
+                                                  decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              customer[
+                                                                  'coverPhoto']),
+                                                          fit: BoxFit.cover))),
+                                              Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    Container(
+                                                        height: 120,
+                                                        width: 120,
+                                                        decoration: BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            border: Border.all(
+                                                                color: customer['isOnline']
+                                                                    ? Colors
+                                                                        .green
+                                                                    : Colors
+                                                                        .grey,
+                                                                width: 3)),
+                                                        child: Container(
+                                                            decoration: BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                border: Border.all(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    width: 3)),
+                                                            child: ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                        130),
+                                                                child: CachedNetworkImage(
+                                                                    imageUrl: customer['logo'],
+                                                                    fit: BoxFit.cover))))
+                                                  ])
+                                            ]))),
+                                ListTile(
+                                    isThreeLine: true,
+                                    leading: const Icon(Icons.store),
+                                    title: Text(customer['name'],
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    subtitle: Text(
+                                        'Customer ID:\n${customer['customerID']}')),
+                                ListTile(
+                                    leading: const Icon(Icons.perm_phone_msg),
+                                    title: Text(customer['mobile']),
+                                    subtitle: Text(customer['email'])),
+                                ListTile(
+                                    leading: const Icon(Icons.location_on),
+                                    title: Text(customer['address']),
+                                    subtitle: Text(customer['landMark'])),
+                                ListTile(
+                                    leading: const Icon(Icons.date_range),
+                                    title: const Text('REGISTERED ON:'),
+                                    subtitle: Text(dateTimeToString(
+                                        customer['registeredOn'])))
+                              ])));
+                    }
+                    return emptyWidget('CUSTOMER NOT FOUND');
+                  }))));
 }

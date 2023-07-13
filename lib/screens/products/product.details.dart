@@ -139,6 +139,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 trailing: TextButton(
                                     onPressed: () => showDialog(
                                         context: context,
+                                        barrierDismissible: false,
                                         builder: (_) => viewVendorDetails(context, product.vendorID)),
                                     child: const Text('View Details')));
                           }
@@ -157,6 +158,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   viewVendorDetails(context, String vendorID) => showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) => StreamBuilder(
           stream: vendorsCollection
               .where('vendorID', isEqualTo: vendorID)

@@ -98,6 +98,7 @@ class _CustomerListState extends State<CustomerList> {
       // ignore: invalid_return_type_for_catch_error
     }).catchError((e) => showDialog(
             context: context,
+            barrierDismissible: false,
             builder: (_) => errorDialog(context, e.toString())));
   }
 
@@ -159,6 +160,7 @@ class _CustomerListState extends State<CustomerList> {
                             MaterialStateProperty.all(Colors.orange)),
                     onPressed: () => showDialog(
                         context: context,
+                        barrierDismissible: false,
                         builder: (_) =>
                             CustomerOrders(customerID: data['customerID'])),
                     child: const Icon(Icons.shopping_bag, color: Colors.white))
@@ -200,6 +202,7 @@ class _CustomerListState extends State<CustomerList> {
 
   viewCustomerDetails(context, String customerID) => showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) => Center(
           child: SingleChildScrollView(
               child: StreamBuilder(
@@ -230,7 +233,7 @@ class _CustomerListState extends State<CustomerList> {
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold)),
                                   trailing: InkWell(
-                                      onTap: () => Navigator.of(context).pop(),
+                                      onTap: () => Navigator.pop(context),
                                       child: const Icon(Icons.close,
                                           color: Colors.white)))),
                           contentPadding: EdgeInsets.zero,
@@ -291,7 +294,6 @@ class _CustomerListState extends State<CustomerList> {
                                                   ])
                                             ]))),
                                 ListTile(
-                                    dense: true,
                                     isThreeLine: true,
                                     leading: const Icon(Icons.store),
                                     title: Text(customer['name'],
@@ -300,17 +302,14 @@ class _CustomerListState extends State<CustomerList> {
                                     subtitle: Text(
                                         'Customer ID:\n${customer['customerID']}')),
                                 ListTile(
-                                    dense: true,
                                     leading: const Icon(Icons.perm_phone_msg),
                                     title: Text(customer['mobile']),
                                     subtitle: Text(customer['email'])),
                                 ListTile(
-                                    dense: true,
                                     leading: const Icon(Icons.location_on),
                                     title: Text(customer['address']),
                                     subtitle: Text(customer['landMark'])),
                                 ListTile(
-                                    dense: true,
                                     leading: const Icon(Icons.date_range),
                                     title: const Text('REGISTERED ON:'),
                                     subtitle: Text(dateTimeToString(

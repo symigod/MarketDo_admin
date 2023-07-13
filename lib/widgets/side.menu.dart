@@ -112,6 +112,7 @@ class _SideMenuState extends State<SideMenu> {
 
   logout() => showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) => confirmDialog(
           context,
           'LOGOUT',

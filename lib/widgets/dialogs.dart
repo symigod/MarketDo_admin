@@ -40,6 +40,7 @@ Future<void> openURL(context, String url) async {
   if (!await launchUrl(Uri.parse(url))) {
     showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (_) => errorDialog(context, 'Cannot open "$url"'));
   }
 }

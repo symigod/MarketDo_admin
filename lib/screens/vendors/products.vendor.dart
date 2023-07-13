@@ -84,6 +84,7 @@ class _VendorProductsState extends State<VendorProducts> {
                             child: InkWell(
                                 onTap: () => showDialog(
                                     context: context,
+                                    barrierDismissible: false,
                                     builder: (_) => ProductDetails(
                                         productID: product.productID)),
                                 child: Container(

@@ -110,6 +110,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                       InkWell(
                                                           onTap: () => showDialog(
                                                               context: context,
+                                                              barrierDismissible:
+                                                                  false,
                                                               builder: (_) =>
                                                                   EditCategoryDialog(
                                                                       categoryID:
@@ -162,6 +164,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   deleteCategory(String categoryID) => showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) => confirmDialog(
               context, 'DELETE CATEGORY', 'Do you want to continue?', () {
             try {
@@ -175,6 +178,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             } catch (e) {
               showDialog(
                   context: context,
+                  barrierDismissible: false,
                   builder: (_) => errorDialog(context, e.toString()));
             }
           }));

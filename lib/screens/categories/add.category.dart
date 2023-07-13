@@ -39,6 +39,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
       if (_formData.subcategories.isEmpty) {
         showDialog(
             context: context,
+            barrierDismissible: false,
             builder: (context) => AlertDialog(
                     title: const Text('Error'),
                     content: const Text('Please add at least one subcategory.'),

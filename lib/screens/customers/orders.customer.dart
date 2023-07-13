@@ -16,194 +16,196 @@ class CustomerOrders extends StatefulWidget {
 
 class _CustomerOrdersState extends State<CustomerOrders> {
   @override
-  Widget build(BuildContext context) => StreamBuilder(
-      stream: ordersCollection
-          .where('customerID', isEqualTo: widget.customerID)
-          .where('isPending', isEqualTo: true)
-          .orderBy('orderedOn', descending: true)
-          .snapshots(),
-      builder: (context, os) {
-        if (os.hasError) {
-          return errorWidget(os.error.toString());
-        }
-        if (os.connectionState == ConnectionState.waiting) {
-          return loadingWidget();
-        }
-        if (os.data!.docs.isNotEmpty) {
-          var order = os.data!.docs;
-          return AlertDialog(
-              scrollable: true,
-              titlePadding: EdgeInsets.zero,
-              title: StreamBuilder(
-                  stream: customersCollection
-                      .where('customerID', isEqualTo: widget.customerID)
-                      .snapshots(),
-                  builder: (context, cs) {
-                    if (cs.hasError) {
-                      return errorWidget(cs.error.toString());
-                    }
-                    if (cs.connectionState == ConnectionState.waiting) {
-                      return loadingWidget();
-                    }
-                    if (cs.data!.docs.isNotEmpty) {
-                      return Card(
-                          color: Colors.green,
-                          margin: EdgeInsets.zero,
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(5),
-                                  topRight: Radius.circular(5))),
-                          child: ListTile(
-                            title: Text(
-                                'Orders of: ${cs.data!.docs[0]['name']}',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold)),
-                            trailing: InkWell(
-                                onTap: () => Navigator.of(context).pop(),
-                                child: const Icon(Icons.close,
-                                    color: Colors.white)),
-                          ));
-                    } else {
-                      return emptyWidget('CUSTOMER NOT FOUND');
-                    }
-                  }),
-              contentPadding: EdgeInsets.zero,
-              content: SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width / 3,
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: order.length,
-                      itemBuilder: (context, index) {
-                        var tileColor = index % 2 == 0
-                            ? Colors.grey.shade100
-                            : Colors.white;
-                        var orders = order[index];
-                        int quantity = orders['productIDs'].length;
-                        return StreamBuilder(
-                            stream: vendorsCollection
-                                .where('vendorID',
-                                    isEqualTo: orders['vendorID'])
-                                .snapshots(),
-                            builder: (context, vs) {
-                              if (vs.hasError) {
-                                return errorWidget(vs.error.toString());
-                              }
-                              if (vs.connectionState ==
-                                  ConnectionState.waiting) {
-                                return loadingWidget();
-                              }
-                              if (vs.data!.docs.isNotEmpty) {
-                                var vendor = vs.data!.docs[0];
-                                return ListTile(
-                                    onTap: () => viewOrderDetails(
-                                        orders['orderID'],
-                                        orders['customerID']),
-                                    dense: true,
-                                    tileColor: tileColor,
-                                    leading: Container(
-                                        height: 40,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                                color: vendor['isOnline']
-                                                    ? Colors.green
-                                                    : Colors.grey,
-                                                width: 2)),
-                                        child: Container(
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                    color: Colors.white,
-                                                    width: 2)),
-                                            child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(50),
-                                                child: CachedNetworkImage(
-                                                    imageUrl: vendor['logo'],
-                                                    fit: BoxFit.cover)))),
-                                    title: Text(vendor['businessName'],
+  Widget build(BuildContext context) => Center(
+      child: SingleChildScrollView(
+          child: StreamBuilder(
+              stream: ordersCollection
+                  .where('customerID', isEqualTo: widget.customerID)
+                  .where('isPending', isEqualTo: true)
+                  .orderBy('orderedOn', descending: true)
+                  .snapshots(),
+              builder: (context, os) {
+                if (os.hasError) {
+                  return errorWidget(os.error.toString());
+                }
+                if (os.connectionState == ConnectionState.waiting) {
+                  return loadingWidget();
+                }
+                if (os.data!.docs.isNotEmpty) {
+                  var order = os.data!.docs;
+                  return AlertDialog(
+                      titlePadding: EdgeInsets.zero,
+                      title: StreamBuilder(
+                          stream: customersCollection
+                              .where('customerID', isEqualTo: widget.customerID)
+                              .snapshots(),
+                          builder: (context, cs) {
+                            if (cs.hasError) {
+                              return errorWidget(cs.error.toString());
+                            }
+                            if (cs.connectionState == ConnectionState.waiting) {
+                              return loadingWidget();
+                            }
+                            if (cs.data!.docs.isNotEmpty) {
+                              return Card(
+                                  color: Colors.green,
+                                  margin: EdgeInsets.zero,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(5),
+                                          topRight: Radius.circular(5))),
+                                  child: ListTile(
+                                    title: Text(
+                                        'Orders of: ${cs.data!.docs[0]['name']}',
                                         style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
                                             fontWeight: FontWeight.bold)),
-                                    subtitle: RichText(
-                                        text: TextSpan(
-                                            style: const TextStyle(fontSize: 12, fontFamily: 'Lato'),
-                                            children: [
-                                          TextSpan(
-                                              text: quantity > 1
-                                                  ? '$quantity items'
-                                                  : '$quantity item',
-                                              style: const TextStyle(
-                                                  color: Colors.grey)),
-                                          TextSpan(
-                                              text:
-                                                  '\n${dateTimeToString(orders['orderedOn'])}',
-                                              style: const TextStyle(
-                                                  color: Colors.blue))
-                                        ])),
-                                    trailing: Text('P ${numberToString(orders['totalPayment'].toDouble())}', style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)));
-                              }
-                              return emptyWidget('VENDOR NOT FOUND');
-                            });
-                      })));
-        }
-        return AlertDialog(
-            scrollable: true,
-            titlePadding: EdgeInsets.zero,
-            title: StreamBuilder(
-                stream: customersCollection
-                    .where('customerID', isEqualTo: widget.customerID)
-                    .snapshots(),
-                builder: (context, cs) {
-                  if (cs.hasError) {
-                    return errorWidget(cs.error.toString());
-                  }
-                  if (cs.connectionState == ConnectionState.waiting) {
-                    return loadingWidget();
-                  }
-                  if (cs.data!.docs.isNotEmpty) {
-                    return Card(
-                        color: Colors.green,
-                        margin: EdgeInsets.zero,
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(5),
-                                topRight: Radius.circular(5))),
-                        child: ListTile(
-                          title: Text('Orders of: ${cs.data!.docs[0]['name']}',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold)),
-                          trailing: InkWell(
-                              onTap: () => Navigator.of(context).pop(),
-                              child:
-                                  const Icon(Icons.close, color: Colors.white)),
-                        ));
-                  } else {
-                    return emptyWidget('CUSTOMER NOT FOUND');
-                  }
-                }),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-            content: SizedBox(
-                width: MediaQuery.of(context).size.width / 3,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Text('NO ORDERS YET', textAlign: TextAlign.center),
-                )));
-      });
+                                    trailing: InkWell(
+                                        onTap: () =>
+                                            Navigator.of(context).pop(),
+                                        child: const Icon(Icons.close,
+                                            color: Colors.white)),
+                                  ));
+                            } else {
+                              return emptyWidget('CUSTOMER NOT FOUND');
+                            }
+                          }),
+                      contentPadding: EdgeInsets.zero,
+                      content: SizedBox(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: order.length,
+                              itemBuilder: (context, index) {
+                                var tileColor = index % 2 == 0
+                                    ? Colors.grey.shade100
+                                    : Colors.white;
+                                var orders = order[index];
+                                int quantity = orders['productIDs'].length;
+                                return StreamBuilder(
+                                    stream: vendorsCollection
+                                        .where('vendorID',
+                                            isEqualTo: orders['vendorID'])
+                                        .snapshots(),
+                                    builder: (context, vs) {
+                                      if (vs.hasError) {
+                                        return errorWidget(vs.error.toString());
+                                      }
+                                      if (vs.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return loadingWidget();
+                                      }
+                                      if (vs.data!.docs.isNotEmpty) {
+                                        var vendor = vs.data!.docs[0];
+                                        return ListTile(
+                                            onTap: () => viewOrderDetails(
+                                                orders['orderID'],
+                                                vendor['vendorID']),
+                                            tileColor: tileColor,
+                                            leading: Container(
+                                                height: 40,
+                                                width: 40,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                        color:
+                                                            vendor['isOnline']
+                                                                ? Colors.green
+                                                                : Colors.grey,
+                                                        width: 2)),
+                                                child: Container(
+                                                    decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                            color: Colors.white,
+                                                            width: 2)),
+                                                    child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(50),
+                                                        child: CachedNetworkImage(
+                                                            imageUrl:
+                                                                vendor['logo'],
+                                                            fit: BoxFit.cover)))),
+                                            title: Text(vendor['businessName'], style: const TextStyle(fontWeight: FontWeight.bold)),
+                                            subtitle: RichText(
+                                                text: TextSpan(style: const TextStyle(fontSize: 12, fontFamily: 'Lato'), children: [
+                                              TextSpan(
+                                                  text: quantity > 1
+                                                      ? '$quantity items'
+                                                      : '$quantity item',
+                                                  style: const TextStyle(
+                                                      color: Colors.grey)),
+                                              TextSpan(
+                                                  text:
+                                                      '\n${dateTimeToString(orders['orderedOn'])}',
+                                                  style: const TextStyle(
+                                                      color: Colors.blue))
+                                            ])),
+                                            trailing: Text('P ${numberToString(orders['totalPayment'].toDouble())}', style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)));
+                                      }
+                                      return emptyWidget('VENDOR NOT FOUND');
+                                    });
+                              })));
+                }
+                return AlertDialog(
+                    scrollable: true,
+                    titlePadding: EdgeInsets.zero,
+                    title: StreamBuilder(
+                        stream: customersCollection
+                            .where('customerID', isEqualTo: widget.customerID)
+                            .snapshots(),
+                        builder: (context, cs) {
+                          if (cs.hasError) {
+                            return errorWidget(cs.error.toString());
+                          }
+                          if (cs.connectionState == ConnectionState.waiting) {
+                            return loadingWidget();
+                          }
+                          if (cs.data!.docs.isNotEmpty) {
+                            return Card(
+                                color: Colors.green,
+                                margin: EdgeInsets.zero,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(5),
+                                        topRight: Radius.circular(5))),
+                                child: ListTile(
+                                  title: Text(
+                                      'Orders of: ${cs.data!.docs[0]['name']}',
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold)),
+                                  trailing: InkWell(
+                                      onTap: () => Navigator.of(context).pop(),
+                                      child: const Icon(Icons.close,
+                                          color: Colors.white)),
+                                ));
+                          } else {
+                            return emptyWidget('CUSTOMER NOT FOUND');
+                          }
+                        }),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                    content: SizedBox(
+                        width: MediaQuery.of(context).size.width / 3,
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: Text('NO ORDERS YET',
+                              textAlign: TextAlign.center),
+                        )));
+              })));
 
   viewOrderDetails(String orderID, String vendorID) => showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) => Center(
           child: SingleChildScrollView(
               child: StreamBuilder(
                   stream: ordersCollection
-                      .where('vendorID', isEqualTo: vendorID)
                       .where('orderID', isEqualTo: orderID)
+                      .where('vendorID', isEqualTo: vendorID)
                       .snapshots(),
                   builder: (context, os) {
                     if (os.hasError) {
@@ -262,7 +264,7 @@ class _CustomerOrdersState extends State<CustomerOrders> {
                                           title: Text(vendor['businessName'], style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                                           trailing: InkWell(onTap: () => Navigator.pop(context), child: const Icon(Icons.close, color: Colors.white))));
                                 }
-                                return emptyWidget('CUSTOMER NOT FOUND');
+                                return emptyWidget('VENDOR NOT FOUND');
                               }),
                           contentPadding: EdgeInsets.zero,
                           content: SizedBox(
@@ -335,7 +337,6 @@ class _CustomerOrdersState extends State<CustomerOrders> {
                                                           order['unitsBought']
                                                               [pIndex];
                                                       return ListTile(
-                                                          dense: true,
                                                           leading: SizedBox(
                                                               width: 50,
                                                               child: CachedNetworkImage(
@@ -397,6 +398,7 @@ class _CustomerOrdersState extends State<CustomerOrders> {
 
   viewVendorDetails(context, String vendorID) => showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) => StreamBuilder(
           stream: vendorsCollection
               .where('vendorID', isEqualTo: vendorID)
@@ -461,7 +463,6 @@ class _CustomerOrdersState extends State<CustomerOrders> {
                                   ])
                             ]))),
                     ListTile(
-                        dense: true,
                         isThreeLine: true,
                         leading: const Icon(Icons.store),
                         title: Text(vendor['businessName'],
@@ -470,17 +471,14 @@ class _CustomerOrdersState extends State<CustomerOrders> {
                         subtitle: FittedBox(
                             child: Text('Vendor ID:\n${vendor['vendorID']}'))),
                     ListTile(
-                        dense: true,
                         leading: const Icon(Icons.perm_phone_msg),
                         title: Text(vendor['mobile']),
                         subtitle: Text(vendor['email'])),
                     ListTile(
-                        dense: true,
                         leading: const Icon(Icons.location_on),
                         title: Text(vendor['address']),
                         subtitle: Text(vendor['landMark'])),
                     ListTile(
-                        dense: true,
                         leading: const Icon(Icons.date_range),
                         title: const Text('REGISTERED ON:'),
                         subtitle:

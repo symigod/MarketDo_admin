@@ -69,6 +69,7 @@ class _ProductsTableState extends State<ProductsTable> {
                       backgroundColor: MaterialStateProperty.all(Colors.teal)),
                   onPressed: () => showDialog(
                       context: context,
+                      barrierDismissible: false,
                       builder: (_) =>
                           ProductDetails(productID: data['productID'])),
                   child: const Icon(Icons.visibility, color: Colors.white)))
