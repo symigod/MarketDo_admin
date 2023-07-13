@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:marketdo_admin/screens/products/products.list.dart';
+import 'package:marketdo_admin/screens/products/products.table.dart';
 
 class ProductScreen extends StatefulWidget {
   static const String id = 'product-screen';
@@ -64,6 +64,6 @@ class _ProductScreenState extends State<ProductScreen> {
             //   _rowHeader(flex: 2, text: 'DESCRIPTION'),
             //   _rowHeader(flex: 2, text: 'UNIT')
             // ]),
-            ProductList(/* isApproved: selectedButton */)
+            ProductsTable(/* isApproved: selectedButton */)
           ]));
 }

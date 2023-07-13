@@ -1,8 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:marketdo_admin/screens/vendors/card.vendor.dart';
+import 'package:marketdo_admin/screens/vendors/orders.vendor.dart';
 import 'package:marketdo_admin/screens/vendors/products.vendor.dart';
+import 'package:marketdo_admin/widgets/dialogs.dart';
 import 'package:marketdo_admin/widgets/snapshots.dart';
 import 'package:marketdo_admin/firebase.services.dart';
 
@@ -38,7 +39,7 @@ class _VendorsTableState extends State<VendorsTable> {
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                          color: data['isOnline'] ? Colors.green : Colors.red,
+                          color: data['isOnline'] ? Colors.green : Colors.grey,
                           width: 2)),
                   child: Container(
                       decoration: BoxDecoration(
@@ -51,8 +52,10 @@ class _VendorsTableState extends State<VendorsTable> {
               DataCell(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(data['businessName'], softWrap: true))),
-              DataCell(Text('${data['mobile']}\n${data['email']}', softWrap: true)),
-              DataCell(Text('${data['address']}\n(${data['landMark']})', softWrap: true)),
+              DataCell(
+                  Text('${data['mobile']}\n${data['email']}', softWrap: true)),
+              DataCell(Text('${data['address']}\n(${data['landMark']})',
+                  softWrap: true)),
               DataCell(Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -86,7 +89,7 @@ class _VendorsTableState extends State<VendorsTable> {
                         onPressed: () => showDialog(
                             context: context,
                             builder: (_) =>
-                                VendorDetailsCard(vendorID: data['vendorID'])),
+                                viewVendorDetails(context, data['vendorID'])),
                         child:
                             const Icon(Icons.visibility, color: Colors.white)),
                     const SizedBox(width: 10),
@@ -98,7 +101,18 @@ class _VendorsTableState extends State<VendorsTable> {
                             context: context,
                             builder: (_) =>
                                 VendorProducts(vendorID: data['vendorID'])),
-                        child: const Icon(Icons.store, color: Colors.white))
+                        child: const Icon(Icons.store, color: Colors.white)),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.orange)),
+                        onPressed: () => showDialog(
+                            context: context,
+                            builder: (_) =>
+                                VendorOrders(vendorID: data['vendorID'])),
+                        child:
+                            const Icon(Icons.shopping_bag, color: Colors.white))
                   ]))
             ]);
           }).toList();
@@ -121,4 +135,113 @@ class _VendorsTableState extends State<VendorsTable> {
         }
         return emptyWidget('NO RECORD FOUND');
       });
+
+  viewVendorDetails(context, String vendorID) => showDialog(
+      context: context,
+      builder: (_) => StreamBuilder(
+          stream: vendorsCollection
+              .where('vendorID', isEqualTo: vendorID)
+              .snapshots(),
+          builder: (context, vs) {
+            if (vs.hasError) {
+              return errorWidget(vs.error.toString());
+            }
+            if (vs.connectionState == ConnectionState.waiting) {
+              return loadingWidget();
+            }
+            if (vs.data!.docs.isNotEmpty) {
+              var vendor = vs.data!.docs[0];
+              return AlertDialog(
+                  scrollable: true,
+                  contentPadding: EdgeInsets.zero,
+                  content: Column(children: [
+                    SizedBox(
+                        height: 150,
+                        child: DrawerHeader(
+                            margin: EdgeInsets.zero,
+                            padding: EdgeInsets.zero,
+                            child:
+                                Stack(alignment: Alignment.center, children: [
+                              Container(
+                                  padding: const EdgeInsets.all(20),
+                                  height: 150,
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(3),
+                                          topRight: Radius.circular(3)),
+                                      image: DecorationImage(
+                                          image:
+                                              NetworkImage(vendor['shopImage']),
+                                          fit: BoxFit.cover))),
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Container(
+                                        height: 120,
+                                        width: 120,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                                color: vendor['isOnline']
+                                                    ? Colors.green
+                                                    : Colors.grey,
+                                                width: 3)),
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                    color: Colors.white,
+                                                    width: 3)),
+                                            child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(130),
+                                                child: CachedNetworkImage(
+                                                    imageUrl: vendor['logo'],
+                                                    fit: BoxFit.cover))))
+                                  ])
+                            ]))),
+                    ListTile(
+                        dense: true,
+                        isThreeLine: true,
+                        leading: const Icon(Icons.store),
+                        title: Text(vendor['businessName'],
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: FittedBox(
+                            child: Text('Vendor ID:\n${vendor['vendorID']}'))),
+                    ListTile(
+                        dense: true,
+                        leading: const Icon(Icons.perm_phone_msg),
+                        title: Text(vendor['mobile']),
+                        subtitle: Text(vendor['email'])),
+                    ListTile(
+                        dense: true,
+                        leading: const Icon(Icons.location_on),
+                        title: Text(vendor['address']),
+                        subtitle: Text(vendor['landMark'])),
+                    ListTile(
+                        dense: true,
+                        leading: const Icon(Icons.date_range),
+                        title: const Text('REGISTERED ON:'),
+                        subtitle:
+                            Text(dateTimeToString(vendor['registeredOn'])))
+                  ]),
+                  actionsAlignment: MainAxisAlignment.center,
+                  actions: [
+                    IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close, color: Colors.red)),
+                    // IconButton(
+                    //     onPressed: () =>
+                    //         openURL(context, 'mailto:${customer['email']}'),
+                    //     icon: const Icon(Icons.mail, color: Colors.blue)),
+                    // IconButton(
+                    //     onPressed: () =>
+                    //         openURL(context, 'tel:${customer['mobile']}'),
+                    //     icon: const Icon(Icons.call, color: Colors.green)),
+                  ]);
+            }
+            return emptyWidget('CUSTOMER NOT FOUND');
+          }));
 }

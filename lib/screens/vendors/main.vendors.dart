@@ -10,7 +10,7 @@ class VendorScreen extends StatefulWidget {
 }
 
 class _VendorScreenState extends State<VendorScreen> {
-  bool? selectedButton;
+  bool? selectedButton = true;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -52,8 +52,7 @@ class _VendorScreenState extends State<VendorScreen> {
                                 ? Theme.of(context).primaryColor
                                 : Colors.grey.shade500)),
                     onPressed: () => setState(() => selectedButton = null),
-                    child: const Text('All'
-                        ''))
+                    child: const Text('All'))
               ])
             ]),
             const SizedBox(height: 10),

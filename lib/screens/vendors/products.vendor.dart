@@ -49,24 +49,28 @@ class _VendorProductsState extends State<VendorProducts> {
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(5),
                                   topRight: Radius.circular(5))),
-                          child: Center(
-                              child: Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Text(
-                                      'Products of\n${vs.data!.docs[0]['businessName']}',
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.center))));
+                          child: ListTile(
+                            title: Text(
+                                'Products of: ${vs.data!.docs[0]['businessName']}',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold)),
+                            trailing: InkWell(
+                                onTap: () => Navigator.of(context).pop(),
+                                child: const Icon(Icons.close,
+                                    color: Colors.white)),
+                          ));
                     } else {
                       return emptyWidget('VENDOR NOT FOUND');
                     }
                   }),
+              contentPadding: EdgeInsets.zero,
               content: SizedBox(
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
                   child: GridView.builder(
+                      padding: const EdgeInsets.all(5),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 7),
@@ -105,13 +109,7 @@ class _VendorProductsState extends State<VendorProducts> {
                                             style: const TextStyle(
                                                 color: Colors.white),
                                             textAlign: TextAlign.center)))));
-                      })),
-              actions: [
-                ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Padding(
-                        padding: EdgeInsets.all(10), child: Text('Close')))
-              ]);
+                      })));
         }
         return emptyWidget('NO PRODUCTS FOUND');
       });

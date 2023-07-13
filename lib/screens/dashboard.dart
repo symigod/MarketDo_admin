@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:marketdo_admin/firebase.services.dart';
 import 'package:marketdo_admin/widgets/snapshots.dart';
@@ -20,22 +23,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<VendorData> chartData = [];
   List<CategoryData> productCategoryData = [];
 
-  Future<void> getCustomersAndVendors() async {
-    final customersQuerySnapshot = await customersCollection.get();
-    final vendorsQuerySnapshot = await vendorsCollection.get();
-    final int customersLength = customersQuerySnapshot.docs.length;
-    final int vendorsLength = vendorsQuerySnapshot.docs.length;
-    if (mounted) {
-      setState(() => customerVendorData = [
-            CustomerVendorData('Customers', customersLength),
-            CustomerVendorData('Vendors', vendorsLength)
-          ]);
-    }
+  Stream<List<CustomerVendorData>> getCustomersAndVendors() {
+    Stream<List<CustomerVendorData>> stream = Stream.fromFuture(Future.wait([
+      customersCollection.get(),
+      vendorsCollection.get(),
+    ])).asyncMap((List<QuerySnapshot> snapshots) {
+      final customersQuerySnapshot = snapshots[0];
+      final vendorsQuerySnapshot = snapshots[1];
+      final int customersLength = customersQuerySnapshot.docs.length;
+      final int vendorsLength = vendorsQuerySnapshot.docs.length;
+      return [
+        CustomerVendorData('Customers', customersLength),
+        CustomerVendorData('Vendors', vendorsLength),
+      ];
+    });
+
+    return stream;
   }
+
+  late StreamController<List<CustomerVendorData>>
+      _customerVendorDataStreamController;
 
   @override
   void initState() {
-    getCustomersAndVendors();
+    _customerVendorDataStreamController =
+        StreamController<List<CustomerVendorData>>();
+    _customerVendorDataStreamController.addStream(getCustomersAndVendors());
     super.initState();
   }
 
@@ -142,38 +155,59 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       return loadingWidget();
                     })),
             // REGISTERED USERS
-            SizedBox(
-                width: MediaQuery.of(context).size.width / 2.5,
-                child: Card(
-                    elevation: 10,
-                    shadowColor: Colors.green.shade900,
-                    shape: RoundedRectangleBorder(
-                        side:
-                            BorderSide(width: 2, color: Colors.green.shade900),
-                        borderRadius: BorderRadius.circular(5)),
-                    child: SfCircularChart(
-                        title: ChartTitle(
-                            text: 'REGISTERED USERS',
-                            textStyle: const TextStyle(
-                                fontFamily: 'Lato',
-                                fontWeight: FontWeight.bold)),
-                        palette: [Colors.pink.shade900, Colors.blue.shade900],
-                        tooltipBehavior: TooltipBehavior(enable: false),
-                        series: <CircularSeries<CustomerVendorData, String>>[
-                          PieSeries<CustomerVendorData, String>(
-                              dataSource: customerVendorData,
-                              xValueMapper: (CustomerVendorData data, _) =>
-                                  data.x,
-                              yValueMapper: (CustomerVendorData data, _) =>
-                                  data.y,
-                              dataLabelMapper: (datum, index) =>
-                                  '${datum.x}: ${datum.y}',
-                              dataLabelSettings: const DataLabelSettings(
-                                  isVisible: true,
-                                  labelPosition: ChartDataLabelPosition.outside,
-                                  useSeriesColor: true,
-                                  textStyle: TextStyle(fontFamily: 'Lato')))
-                        ]))),
+            StreamBuilder(
+                stream: _customerVendorDataStreamController.stream,
+                builder: (context, rus) {
+                  if (rus.hasData) {
+                    List<CustomerVendorData>? customerVendorData = rus.data;
+                    return SizedBox(
+                        width: MediaQuery.of(context).size.width / 2.5,
+                        child: Card(
+                            elevation: 10,
+                            shadowColor: Colors.green.shade900,
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    width: 2, color: Colors.green.shade900),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: SfCircularChart(
+                                title: ChartTitle(
+                                    text: 'REGISTERED USERS',
+                                    textStyle: const TextStyle(
+                                        fontFamily: 'Lato',
+                                        fontWeight: FontWeight.bold)),
+                                palette: [
+                                  Colors.pink.shade900,
+                                  Colors.blue.shade900
+                                ],
+                                tooltipBehavior: TooltipBehavior(enable: false),
+                                series: <CircularSeries<CustomerVendorData,
+                                    String>>[
+                                  PieSeries<CustomerVendorData, String>(
+                                      dataSource: customerVendorData,
+                                      xValueMapper: (CustomerVendorData data,
+                                              _) =>
+                                          data.x,
+                                      yValueMapper:
+                                          (CustomerVendorData data, _) =>
+                                              data.y,
+                                      dataLabelMapper: (datum, index) =>
+                                          '${datum.x}: ${datum.y}',
+                                      dataLabelSettings:
+                                          const DataLabelSettings(
+                                              isVisible: true,
+                                              labelPosition:
+                                                  ChartDataLabelPosition
+                                                      .outside,
+                                              useSeriesColor: true,
+                                              textStyle: TextStyle(
+                                                  fontFamily: 'Lato')))
+                                ])));
+                  } else if (rus.hasError) {
+                    return errorWidget(rus.error.toString());
+                  } else {
+                    return loadingWidget();
+                  }
+                }),
             // PRODUCT CATEGORIES
             StreamBuilder(
                 stream: productsCollection.snapshots(),

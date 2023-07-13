@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:marketdo_admin/screens/products/product.details.dart';
+import 'package:marketdo_admin/widgets/dialogs.dart';
 import 'package:marketdo_admin/widgets/snapshots.dart';
 import 'package:marketdo_admin/firebase.services.dart';
 
-class ProductList extends StatefulWidget {
+class ProductsTable extends StatefulWidget {
   // final bool? isApproved;
-  const ProductList({/* this.isApproved, */ Key? key}) : super(key: key);
+  const ProductsTable({/* this.isApproved, */ Key? key}) : super(key: key);
 
   @override
-  State<ProductList> createState() => _ProductListState();
+  State<ProductsTable> createState() => _ProductsTableState();
 }
 
-class _ProductListState extends State<ProductList> {
+class _ProductsTableState extends State<ProductsTable> {
   @override
   Widget build(BuildContext context) => StreamBuilder(
       stream: productsCollection
@@ -42,27 +43,27 @@ class _ProductListState extends State<ProductList> {
                   alignment: Alignment.centerLeft,
                   child: Text(data['productName'], softWrap: true))),
               DataCell(Text(data['category'], softWrap: true)),
-              DataCell(Text(data['description'], softWrap: true)),
+              // DataCell(Text(data['description'], softWrap: true)),
               DataCell(Text(
-                  'P ${data['regularPrice'].toStringAsFixed(2)} per ${data['unit']}',
+                  'P ${numberToString(data['regularPrice'].toDouble())} per ${data['unit']}',
                   softWrap: true)),
-              DataCell(FutureBuilder(
-                  future: vendorsCollection
-                      .where('vendorID', isEqualTo: data['vendorID'])
-                      .get(),
-                  builder: (context, vs) {
-                    if (vs.hasError) {
-                      return errorWidget(vs.error.toString());
-                    }
-                    if (vs.connectionState == ConnectionState.waiting) {
-                      return loadingWidget();
-                    }
-                    if (vs.hasData) {
-                      return Text(vs.data!.docs[0]['businessName'],
-                          softWrap: true);
-                    }
-                    return emptyWidget('VENDOR NOT FOUND');
-                  })),
+              // DataCell(FutureBuilder(
+              //     future: vendorsCollection
+              //         .where('vendorID', isEqualTo: data['vendorID'])
+              //         .get(),
+              //     builder: (context, vs) {
+              //       if (vs.hasError) {
+              //         return errorWidget(vs.error.toString());
+              //       }
+              //       if (vs.connectionState == ConnectionState.waiting) {
+              //         return loadingWidget();
+              //       }
+              //       if (vs.hasData) {
+              //         return Text(vs.data!.docs[0]['businessName'],
+              //             softWrap: true);
+              //       }
+              //       return emptyWidget('VENDOR NOT FOUND');
+              //     })),
               DataCell(ElevatedButton(
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.teal)),
@@ -126,9 +127,9 @@ class _ProductListState extends State<ProductList> {
                 DataColumn(label: Text('IMAGE')),
                 DataColumn(label: Text('PRODUCT')),
                 DataColumn(label: Text('CATEGORY')),
-                DataColumn(label: Text('DESCRIPTION')),
+                // DataColumn(label: Text('DESCRIPTION')),
                 DataColumn(label: Text('PRICE')),
-                DataColumn(label: Text('VENDOR')),
+                // DataColumn(label: Text('VENDOR')),
                 DataColumn(label: Text('ACTION'))
               ],
               rows: rows);

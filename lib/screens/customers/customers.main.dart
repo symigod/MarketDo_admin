@@ -1,7 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:marketdo_admin/screens/customers/card.customer.dart';
+import 'package:marketdo_admin/screens/customers/orders.customer.dart';
 import 'package:marketdo_admin/widgets/snapshots.dart';
 import 'package:marketdo_admin/widgets/dialogs.dart';
 import 'package:marketdo_admin/firebase.services.dart';
@@ -124,7 +125,7 @@ class _CustomerListState extends State<CustomerList> {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                        color: data['isOnline'] ? Colors.green : Colors.red,
+                        color: data['isOnline'] ? Colors.green : Colors.grey,
                         width: 2)),
                 child: Container(
                     decoration: BoxDecoration(
@@ -137,19 +138,31 @@ class _CustomerListState extends State<CustomerList> {
             DataCell(Align(
                 alignment: Alignment.centerLeft,
                 child: Text(data['name'], softWrap: true))),
-            DataCell(Text('${data['mobile']}\n${data['email']}', softWrap: true)),
-            DataCell(Text('${data['address']}\n(${data['landMark']})', softWrap: true)),
-            DataCell(Center(
-              child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.teal)),
-                        onPressed: () => showDialog(
-                            context: context,
-                            builder: (_) =>
-                                CustomerDetailsCard(customerID: data['customerID'])),
-                        child:
-                            const Icon(Icons.visibility, color: Colors.white)),
+            DataCell(
+                Text('${data['mobile']}\n${data['email']}', softWrap: true)),
+            DataCell(Text('${data['address']}\n(${data['landMark']})',
+                softWrap: true)),
+            DataCell(Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.teal)),
+                    onPressed: () =>
+                        viewCustomerDetails(context, data['customerID']),
+                    child: const Icon(Icons.visibility, color: Colors.white)),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.orange)),
+                    onPressed: () => showDialog(
+                        context: context,
+                        builder: (_) =>
+                            CustomerOrders(customerID: data['customerID'])),
+                    child: const Icon(Icons.shopping_bag, color: Colors.white))
+              ],
             ))
             // DataCell(Center(
             //     child: ElevatedButton(
@@ -184,4 +197,126 @@ class _CustomerListState extends State<CustomerList> {
             ],
             rows: rows);
       });
+
+  viewCustomerDetails(context, String customerID) => showDialog(
+      context: context,
+      builder: (_) => Center(
+          child: SingleChildScrollView(
+              child: StreamBuilder(
+                  stream: customersCollection
+                      .where('customerID', isEqualTo: customerID)
+                      .snapshots(),
+                  builder: (context, cs) {
+                    if (cs.hasError) {
+                      return errorWidget(cs.error.toString());
+                    }
+                    if (cs.connectionState == ConnectionState.waiting) {
+                      return loadingWidget();
+                    }
+                    if (cs.data!.docs.isNotEmpty) {
+                      var customer = cs.data!.docs[0];
+                      return AlertDialog(
+                          titlePadding: EdgeInsets.zero,
+                          title: Card(
+                              color: Colors.green,
+                              margin: EdgeInsets.zero,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(5),
+                                      topRight: Radius.circular(5))),
+                              child: ListTile(
+                                  title: const Text('Customer Details',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold)),
+                                  trailing: InkWell(
+                                      onTap: () => Navigator.of(context).pop(),
+                                      child: const Icon(Icons.close,
+                                          color: Colors.white)))),
+                          contentPadding: EdgeInsets.zero,
+                          content: SizedBox(
+                              width: MediaQuery.of(context).size.width / 3,
+                              child: Column(children: [
+                                SizedBox(
+                                    height: 150,
+                                    child: DrawerHeader(
+                                        margin: EdgeInsets.zero,
+                                        padding: EdgeInsets.zero,
+                                        child: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              Container(
+                                                  padding:
+                                                      const EdgeInsets.all(20),
+                                                  height: 150,
+                                                  decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              customer[
+                                                                  'coverPhoto']),
+                                                          fit: BoxFit.cover))),
+                                              Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    Container(
+                                                        height: 120,
+                                                        width: 120,
+                                                        decoration: BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            border: Border.all(
+                                                                color: customer['isOnline']
+                                                                    ? Colors
+                                                                        .green
+                                                                    : Colors
+                                                                        .grey,
+                                                                width: 3)),
+                                                        child: Container(
+                                                            decoration: BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                border: Border.all(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    width: 3)),
+                                                            child: ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                        130),
+                                                                child: CachedNetworkImage(
+                                                                    imageUrl: customer['logo'],
+                                                                    fit: BoxFit.cover))))
+                                                  ])
+                                            ]))),
+                                ListTile(
+                                    dense: true,
+                                    isThreeLine: true,
+                                    leading: const Icon(Icons.store),
+                                    title: Text(customer['name'],
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    subtitle: Text(
+                                        'Customer ID:\n${customer['customerID']}')),
+                                ListTile(
+                                    dense: true,
+                                    leading: const Icon(Icons.perm_phone_msg),
+                                    title: Text(customer['mobile']),
+                                    subtitle: Text(customer['email'])),
+                                ListTile(
+                                    dense: true,
+                                    leading: const Icon(Icons.location_on),
+                                    title: Text(customer['address']),
+                                    subtitle: Text(customer['landMark'])),
+                                ListTile(
+                                    dense: true,
+                                    leading: const Icon(Icons.date_range),
+                                    title: const Text('REGISTERED ON:'),
+                                    subtitle: Text(dateTimeToString(
+                                        customer['registeredOn'])))
+                              ])));
+                    }
+                    return emptyWidget('CUSTOMER NOT FOUND');
+                  }))));
 }

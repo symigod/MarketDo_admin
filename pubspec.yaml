@@ -51,6 +51,7 @@ dependencies:
   mime_type: ^1.0.0
   path: ^1.8.2
   syncfusion_flutter_charts: ^21.2.8
+  url_launcher: ^6.1.12
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
