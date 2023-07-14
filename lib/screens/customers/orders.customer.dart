@@ -242,7 +242,7 @@ class _CustomerOrdersState extends State<CustomerOrders> {
                                               topRight: Radius.circular(3))),
                                       child: ListTile(
                                           onTap: () => viewVendorDetails(
-                                              context, vendor['customerID']),
+                                              context, vendor['vendorID']),
                                           leading: Container(
                                               height: 40,
                                               width: 40,
@@ -414,90 +414,104 @@ class _CustomerOrdersState extends State<CustomerOrders> {
               var vendor = vs.data!.docs[0];
               return AlertDialog(
                   scrollable: true,
+                  titlePadding: EdgeInsets.zero,
+                  title: Card(
+                      color: Colors.green,
+                      margin: EdgeInsets.zero,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(5),
+                              topRight: Radius.circular(5))),
+                      child: ListTile(
+                          title: const Text('Vendor Details',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                          trailing: InkWell(
+                              onTap: () => Navigator.of(context).pop(),
+                              child: const Icon(Icons.close,
+                                  color: Colors.white)))),
                   contentPadding: EdgeInsets.zero,
-                  content: Column(children: [
-                    SizedBox(
-                        height: 150,
-                        child: DrawerHeader(
-                            margin: EdgeInsets.zero,
-                            padding: EdgeInsets.zero,
-                            child:
-                                Stack(alignment: Alignment.center, children: [
-                              Container(
-                                  padding: const EdgeInsets.all(20),
-                                  height: 150,
-                                  decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(3),
-                                          topRight: Radius.circular(3)),
-                                      image: DecorationImage(
-                                          image:
-                                              NetworkImage(vendor['shopImage']),
-                                          fit: BoxFit.cover))),
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Container(
-                                        height: 120,
-                                        width: 120,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                                color: vendor['isOnline']
-                                                    ? Colors.green
-                                                    : Colors.grey,
-                                                width: 3)),
-                                        child: Container(
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                    color: Colors.white,
-                                                    width: 3)),
-                                            child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(130),
-                                                child: CachedNetworkImage(
-                                                    imageUrl: vendor['logo'],
-                                                    fit: BoxFit.cover))))
-                                  ])
-                            ]))),
-                    ListTile(
-                        isThreeLine: true,
-                        leading: const Icon(Icons.store),
-                        title: Text(vendor['businessName'],
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: FittedBox(
-                            child: Text('Vendor ID:\n${vendor['vendorID']}'))),
-                    ListTile(
-                        leading: const Icon(Icons.perm_phone_msg),
-                        title: Text(vendor['mobile']),
-                        subtitle: Text(vendor['email'])),
-                    ListTile(
-                        leading: const Icon(Icons.location_on),
-                        title: Text(vendor['address']),
-                        subtitle: Text(vendor['landMark'])),
-                    ListTile(
-                        leading: const Icon(Icons.date_range),
-                        title: const Text('REGISTERED ON:'),
-                        subtitle:
-                            Text(dateTimeToString(vendor['registeredOn'])))
-                  ]),
-                  actionsAlignment: MainAxisAlignment.center,
-                  actions: [
-                    IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.close, color: Colors.red)),
-                    // IconButton(
-                    //     onPressed: () =>
-                    //         openURL(context, 'mailto:${customer['email']}'),
-                    //     icon: const Icon(Icons.mail, color: Colors.blue)),
-                    // IconButton(
-                    //     onPressed: () =>
-                    //         openURL(context, 'tel:${customer['mobile']}'),
-                    //     icon: const Icon(Icons.call, color: Colors.green)),
-                  ]);
+                  content: SizedBox(
+                      width: MediaQuery.of(context).size.width / 3,
+                      child: Column(children: [
+                        SizedBox(
+                            height: 150,
+                            child: DrawerHeader(
+                                margin: EdgeInsets.zero,
+                                padding: EdgeInsets.zero,
+                                child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Container(
+                                          padding: const EdgeInsets.all(20),
+                                          height: 150,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(3),
+                                                      topRight:
+                                                          Radius.circular(3)),
+                                              image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      vendor['shopImage']),
+                                                  fit: BoxFit.cover))),
+                                      Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Container(
+                                                height: 120,
+                                                width: 120,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                        color: vendor['isOnline']
+                                                            ? Colors.green
+                                                            : Colors.grey,
+                                                        width: 3)),
+                                                child: Container(
+                                                    decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                            color: Colors.white,
+                                                            width: 3)),
+                                                    child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(130),
+                                                        child:
+                                                            CachedNetworkImage(
+                                                                imageUrl:
+                                                                    vendor[
+                                                                        'logo'],
+                                                                fit: BoxFit
+                                                                    .cover))))
+                                          ])
+                                    ]))),
+                        ListTile(
+                            isThreeLine: true,
+                            leading: const Icon(Icons.store),
+                            title: Text(vendor['businessName'],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                            subtitle:
+                                Text('Vendor ID:\n${vendor['vendorID']}')),
+                        ListTile(
+                            leading: const Icon(Icons.perm_phone_msg),
+                            title: Text(vendor['mobile']),
+                            subtitle: Text(vendor['email'])),
+                        ListTile(
+                            leading: const Icon(Icons.location_on),
+                            title: Text(vendor['address']),
+                            subtitle: Text(vendor['landMark'])),
+                        ListTile(
+                            leading: const Icon(Icons.date_range),
+                            title: const Text('REGISTERED ON:'),
+                            subtitle:
+                                Text(dateTimeToString(vendor['registeredOn'])))
+                      ])));
             }
             return emptyWidget('CUSTOMER NOT FOUND');
           }));

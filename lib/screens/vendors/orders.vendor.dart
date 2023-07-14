@@ -228,19 +228,22 @@ class _VendorOrdersState extends State<VendorOrders> {
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SizedBox(
-                                        height: 64,
-                                        child: ListTile(
-                                            leading:
-                                                const Icon(Icons.date_range),
-                                            title: const Text('Ordered on:'),
-                                            trailing: Text(
-                                                dateTimeToString(
-                                                    order['orderedOn']),
-                                                style: const TextStyle(
-                                                    color: Colors.blue,
-                                                    fontWeight:
-                                                        FontWeight.bold)))),
+                                    ListTile(
+                                        leading: const Icon(
+                                            Icons.confirmation_number),
+                                        title: const Text('Order Code:'),
+                                        trailing: Text(order['orderID'],
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold))),
+                                    ListTile(
+                                        leading: const Icon(Icons.date_range),
+                                        title: const Text('Ordered on:'),
+                                        trailing: Text(
+                                            dateTimeToString(
+                                                order['orderedOn']),
+                                            style: const TextStyle(
+                                                color: Colors.blue,
+                                                fontWeight: FontWeight.bold))),
                                     StreamBuilder(
                                         stream: Stream.fromFuture(Future.wait(
                                             products.map((productId) =>
@@ -336,17 +339,22 @@ class _VendorOrdersState extends State<VendorOrders> {
                                                     })
                                               ]);
                                         }),
-                                    SizedBox(
-                                        height: 64,
-                                        child: ListTile(
-                                            leading: const Icon(Icons.payments),
-                                            title: const Text('Total Payment:'),
-                                            trailing: Text(
-                                                'P ${numberToString(order['totalPayment'].toDouble())}',
-                                                style: const TextStyle(
-                                                    color: Colors.red,
-                                                    fontWeight:
-                                                        FontWeight.bold))))
+                                    ListTile(
+                                        leading: const Icon(Icons.date_range),
+                                        title: const Text('Delivery Fee:'),
+                                        trailing: Text(
+                                            'P ${numberToString(order['shippingFee'].toDouble())}',
+                                            style: const TextStyle(
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.bold))),
+                                    ListTile(
+                                        leading: const Icon(Icons.payments),
+                                        title: const Text('Total Payment:'),
+                                        trailing: Text(
+                                            'P ${numberToString(order['totalPayment'].toDouble())}',
+                                            style: const TextStyle(
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.bold)))
                                   ])));
                     }
                     return emptyWidget('ORDER NOT FOUND');
