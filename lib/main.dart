@@ -126,9 +126,6 @@ class _PasswordScreenState extends State<PasswordScreen> {
       : showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (_) => AlertDialog(
-                title: Text('ACCESS DENIED',
-                    style: TextStyle(color: Colors.red.shade900)),
-                content: const Text('Incorrect password!'),
-              ));
+          builder: (_) =>
+              errorDialog(context, 'Access denied! Password incorrect!'));
 }

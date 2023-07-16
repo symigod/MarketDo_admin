@@ -21,11 +21,12 @@ class _VendorOrdersState extends State<VendorOrders> {
           child: StreamBuilder(
               stream: ordersCollection
                   .where('vendorID', isEqualTo: widget.vendorID)
-                  .where('isPending', isEqualTo: true)
+                  .where('isDelivered', isEqualTo: false)
                   .orderBy('orderedOn', descending: true)
                   .snapshots(),
               builder: (context, os) {
                 if (os.hasError) {
+               
                   return errorWidget(os.error.toString());
                 }
                 if (os.connectionState == ConnectionState.waiting) {
