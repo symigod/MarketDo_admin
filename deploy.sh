@@ -23,3 +23,5 @@ echo "=================================================="
 echo "Running git push -u origin main ..."
 echo "=================================================="
 git push -u origin main
+
+read -p "Press Enter to close..."
