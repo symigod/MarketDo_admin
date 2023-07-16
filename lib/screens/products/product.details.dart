@@ -15,146 +15,164 @@ class ProductDetails extends StatefulWidget {
 
 class _ProductDetailsState extends State<ProductDetails> {
   @override
-  Widget build(BuildContext context) => StreamBuilder(
-      stream: productsCollection
-          .where('productID', isEqualTo: widget.productID)
-          .snapshots(),
-      builder: (context, ps) {
-        if (ps.hasError) {
-          return errorWidget(ps.error.toString());
-        }
-        if (ps.connectionState == ConnectionState.waiting) {
-          return loadingWidget();
-        }
-        if (ps.hasData) {
-          List<ProductModel> productModel = ps.data!.docs
-              .map((doc) => ProductModel.fromFirestore(doc))
-              .toList();
-          var product = productModel[0];
-          return AlertDialog(
-              scrollable: true,
-              title: SizedBox(
-                  height: MediaQuery.of(context).size.height / 2,
-                  width: MediaQuery.of(context).size.height / 2,
-                  child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(5),
-                          topRight: Radius.circular(5)),
-                      child: CachedNetworkImage(imageUrl: product.imageURL))),
-              content: SizedBox(
-                  width: MediaQuery.of(context).size.width / 3,
-                  child: Column(children: [
-                    ListTile(
-                        leading: const Icon(Icons.info),
-                        title: Text(product.productName),
-                        subtitle: Text(product.description)),
-                    const Divider(height: 0, thickness: 1),
-                    ListTile(
-                        leading: const Icon(Icons.category),
-                        title: Text(product.category),
-                        subtitle: Text(product.subcategory),
-                        trailing:
-                            Row(mainAxisSize: MainAxisSize.min, children: [
-                          const Icon(Icons.favorite, color: Colors.red),
-                          const SizedBox(width: 5),
-                          StreamBuilder(
-                              stream: favoritesCollection
-                                  .where('productID',
-                                      isEqualTo: product.productID)
-                                  .snapshots(),
-                              builder: (context, fs) {
-                                const count = Text('0',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold));
-                                if (fs.hasError) {
-                                  errorWidget(fs.error.toString());
-                                }
-                                if (fs.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return count;
-                                }
-                                if (fs.hasData) {
-                                  return Text(fs.data!.docs.length.toString(),
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold));
-                                }
-                                return count;
-                              })
-                        ])),
-                    const Divider(height: 0, thickness: 1),
-                    ListTile(
-                        leading: const Icon(Icons.payments),
-                        title: Text('Regular Price (per ${product.unit})'),
-                        trailing: Text(
-                            'P ${numberToString(product.regularPrice.toDouble())}',
-                            style: const TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold))),
-                    const Divider(height: 0, thickness: 1),
-                    ListTile(
-                        leading: const Icon(Icons.delivery_dining),
-                        title: const Text('Delivery Fee'),
-                        trailing: Text(
-                            'P ${product.shippingCharge.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold))),
-                    const Divider(height: 0, thickness: 1),
-                    StreamBuilder(
-                        stream: vendorsCollection
-                            .where('vendorID', isEqualTo: product.vendorID)
-                            .snapshots(),
-                        builder: (context, vs) {
-                          if (vs.hasError) {
-                            return errorWidget(vs.error.toString());
-                          }
-                          if (vs.connectionState == ConnectionState.waiting) {
-                            return const SizedBox.shrink();
-                          }
-                          if (vs.hasData) {
-                            return ListTile(
-                                leading: Container(
-                                    height: 30,
-                                    width: 30,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                            color: vs.data!.docs[0]['isOnline']
-                                                ? Colors.green
-                                                : Colors.grey,
-                                            width: 2)),
-                                    child: Container(
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                                color: Colors.white, width: 2)),
-                                        child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(50),
-                                            child: CachedNetworkImage(
-                                                imageUrl: vs.data!.docs[0]
-                                                    ['logo'],
-                                                fit: BoxFit.cover)))),
-                                title: Text(vs.data!.docs[0]['businessName']),
-                                trailing: TextButton(
-                                    onPressed: () => showDialog(
-                                        context: context,
-                                        barrierDismissible: false,
-                                        builder: (_) => viewVendorDetails(context, product.vendorID)),
-                                    child: const Text('View Details')));
-                          }
-                          return emptyWidget('VENDOR NOT FOUND');
-                        })
-                  ])),
-              actions: [
-                ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Padding(
-                        padding: EdgeInsets.all(10), child: Text('Close')))
-              ]);
-        }
-        return emptyWidget('PRODUCT NOT FOUND');
-      });
+  Widget build(BuildContext context) => Center(
+      child: SingleChildScrollView(
+          child: StreamBuilder(
+              stream: productsCollection
+                  .where('productID', isEqualTo: widget.productID)
+                  .snapshots(),
+              builder: (context, ps) {
+                if (ps.hasError) {
+                  return errorWidget(ps.error.toString());
+                }
+                if (ps.connectionState == ConnectionState.waiting) {
+                  return loadingWidget();
+                }
+                if (ps.hasData) {
+                  List<ProductModel> productModel = ps.data!.docs
+                      .map((doc) => ProductModel.fromFirestore(doc))
+                      .toList();
+                  var product = productModel[0];
+                  return AlertDialog(
+                      titlePadding: EdgeInsets.zero,
+                      title: Card(
+                          color: Colors.green,
+                          margin: EdgeInsets.zero,
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(5),
+                                  topRight: Radius.circular(5))),
+                          child: ListTile(
+                            title: const Text('Product Details',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold)),
+                            trailing: InkWell(
+                                onTap: () => Navigator.of(context).pop(),
+                                child: const Icon(Icons.close,
+                                    color: Colors.white)),
+                          )),
+                      content: SizedBox(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: Column(children: [
+                            ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: CachedNetworkImage(
+                                    imageUrl: product.imageURL)),
+                            ListTile(
+                                leading: const Icon(Icons.info),
+                                title: Text(product.productName),
+                                subtitle: Text(product.description),
+                                trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.favorite,
+                                          color: Colors.red),
+                                      const SizedBox(width: 5),
+                                      StreamBuilder(
+                                          stream: favoritesCollection
+                                              .where('productIDs',
+                                                  arrayContains:
+                                                      product.productID)
+                                              .snapshots(),
+                                          builder: (context, fs) {
+                                            const count = Text('0',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold));
+                                            if (fs.hasError) {
+                                              errorWidget(fs.error.toString());
+                                            }
+                                            if (fs.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return count;
+                                            }
+                                            if (fs.hasData) {
+                                              return Text(
+                                                  fs.data!.docs.length
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold));
+                                            }
+                                            return count;
+                                          })
+                                    ])),
+                            const Divider(height: 0, thickness: 1),
+                            ListTile(
+                                leading: const Icon(Icons.category),
+                                title: Text(product.category),
+                                subtitle: Text(product.subcategory),
+                                trailing: categoryIcon(product.category)),
+                            const Divider(height: 0, thickness: 1),
+                            ListTile(
+                                leading: const Icon(Icons.payments),
+                                title:
+                                    Text('Regular Price (per ${product.unit})'),
+                                trailing: Text(
+                                    'P ${numberToString(product.regularPrice.toDouble())}',
+                                    style: const TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold))),
+                            const Divider(height: 0, thickness: 1),
+                            ListTile(
+                                leading: const Icon(Icons.delivery_dining),
+                                title: const Text('Delivery Fee'),
+                                trailing: Text(
+                                    'P ${product.shippingCharge.toStringAsFixed(2)}',
+                                    style: const TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold))),
+                            const Divider(height: 0, thickness: 1),
+                            StreamBuilder(
+                                stream: vendorsCollection
+                                    .where('vendorID',
+                                        isEqualTo: product.vendorID)
+                                    .snapshots(),
+                                builder: (context, vs) {
+                                  if (vs.hasError) {
+                                    return errorWidget(vs.error.toString());
+                                  }
+                                  if (vs.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  if (vs.hasData) {
+                                    return ListTile(
+                                        leading: Container(
+                                            height: 30,
+                                            width: 30,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                    color: vs.data!.docs[0]['isOnline']
+                                                        ? Colors.green
+                                                        : Colors.grey,
+                                                    width: 2)),
+                                            child: Container(
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                        color: Colors.white,
+                                                        width: 2)),
+                                                child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            50),
+                                                    child: CachedNetworkImage(
+                                                        imageUrl: vs.data!.docs[0]
+                                                            ['logo'],
+                                                        fit: BoxFit.cover)))),
+                                        title: Text(vs.data!.docs[0]['businessName']),
+                                        trailing: TextButton(onPressed: () => showDialog(context: context, barrierDismissible: false, builder: (_) => viewVendorDetails(context, product.vendorID)), child: const Text('View Details')));
+                                  }
+                                  return emptyWidget('VENDOR NOT FOUND');
+                                })
+                          ])));
+                }
+                return emptyWidget('PRODUCT NOT FOUND');
+              })));
 
   viewVendorDetails(context, String vendorID) => showDialog(
       context: context,

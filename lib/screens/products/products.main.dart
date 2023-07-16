@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:marketdo_admin/screens/products/products.table.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:marketdo_admin/screens/products/by.category/clothing.dart';
+import 'package:marketdo_admin/screens/products/by.category/food.dart';
+import 'package:marketdo_admin/screens/products/by.category/household.dart';
+import 'package:marketdo_admin/screens/products/by.category/others.dart';
+import 'package:marketdo_admin/screens/products/by.category/personalcare.dart';
+import 'package:marketdo_admin/screens/products/by.category/school.office.dart';
 
 class ProductScreen extends StatefulWidget {
   static const String id = 'product-screen';
@@ -9,61 +15,50 @@ class ProductScreen extends StatefulWidget {
   State<ProductScreen> createState() => _ProductScreenState();
 }
 
-class _ProductScreenState extends State<ProductScreen> {
+class _ProductScreenState extends State<ProductScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    tabController = TabController(length: 6, vsync: this);
+  }
+
   bool? selectedButton;
 
   @override
-  Widget build(BuildContext context) => Container(
-      alignment: Alignment.topLeft,
-      padding: const EdgeInsets.all(10),
-      child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text('REGISTERED PRODUCTS',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              // Row(children: [
-              //   //APPROVED BUTTON
-              //   ElevatedButton(
-              //       style: ButtonStyle(
-              //           backgroundColor: MaterialStateProperty.all(
-              //               selectedButton == true
-              //                   ? Theme.of(context).primaryColor
-              //                   : Colors.grey.shade500)),
-              //       onPressed: () => setState(() => selectedButton = true),
-              //       child: const Text('Approved')),
-              //   //REJECTED BUTTON
-              //   const SizedBox(width: 10),
-              //   ElevatedButton(
-              //       style: ButtonStyle(
-              //           backgroundColor: MaterialStateProperty.all(
-              //               selectedButton == false
-              //                   ? Theme.of(context).primaryColor
-              //                   : Colors.grey.shade500)),
-              //       onPressed: () => setState(() => selectedButton = false),
-              //       child: const Text('Not Approved')),
-              //   //All BUTTON
-              //   const SizedBox(width: 10),
-              //   ElevatedButton(
-              //       style: ButtonStyle(
-              //           backgroundColor: MaterialStateProperty.all(
-              //               selectedButton == null
-              //                   ? Theme.of(context).primaryColor
-              //                   : Colors.grey.shade500)),
-              //       onPressed: () => setState(() => selectedButton = null),
-              //       child: const Text('All'
-              //           ''))
-              // ])
-            ]),
-            SizedBox(height: 10),
-            // Row(children: [
-            //   _rowHeader(flex: 2, text: 'PRODUCT NAME'),
-            //   _rowHeader(flex: 2, text: 'BRAND'),
-            //   _rowHeader(flex: 2, text: 'OTHER DETAILS'),
-            //   _rowHeader(flex: 2, text: 'DESCRIPTION'),
-            //   _rowHeader(flex: 2, text: 'UNIT')
-            // ]),
-            ProductsTable(/* isApproved: selectedButton */)
-          ]));
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+        length: 6,
+        child: SizedBox(
+            height: MediaQuery.of(context).size.height - 56,
+            width: MediaQuery.of(context).size.width,
+            child: Column(children: [
+              Container(
+                  color: Colors.green.shade900,
+                  child: TabBar(
+                      controller: tabController,
+                      unselectedLabelColor: Colors.grey,
+                      indicatorColor: Colors.yellow,
+                      indicatorWeight: 3,
+                      tabs: const [
+                        Tab(icon: FaIcon(FontAwesomeIcons.shirt)),
+                        Tab(icon: FaIcon(FontAwesomeIcons.utensils)),
+                        Tab(icon: FaIcon(FontAwesomeIcons.couch)),
+                        Tab(icon: FaIcon(FontAwesomeIcons.handSparkles)),
+                        Tab(icon: FaIcon(FontAwesomeIcons.folderOpen)),
+                        Tab(icon: FaIcon(FontAwesomeIcons.ellipsis))
+                      ])),
+              Expanded(
+                  child: TabBarView(controller: tabController, children: const [
+                ClothingAndAccessories(),
+                FoodAndBeverages(),
+                HouseholdItems(),
+                PersonalCare(),
+                SchoolAndOfficeSupplies(),
+                Others()
+              ]))
+            ])));
+  }
 }

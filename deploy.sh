@@ -6,7 +6,7 @@ while true; do
     echo "2. DEPLOY TO FIREBASE"
     echo "3. PUSH TO GITHUB"
     echo "4. PERFORM ALL OPTIONS (1-3)"
-    echo "5. CANCEL/EXIT"
+    echo "0. EXIT"
 
     read -p "Enter your choice: " choice
 
@@ -68,7 +68,7 @@ while true; do
         echo "=================================================="
         git push -u origin main
 
-    elif [ "$choice" = "5" ]; then
+    elif [ "$choice" = "0" ]; then
         echo "Exiting..."
         exit 0
 

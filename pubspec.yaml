@@ -52,6 +52,7 @@ dependencies:
   path: ^1.8.2
   syncfusion_flutter_charts: ^21.2.8
   url_launcher: ^6.1.12
+  font_awesome_flutter: ^10.5.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1

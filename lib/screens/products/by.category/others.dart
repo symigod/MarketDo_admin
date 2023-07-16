@@ -4,20 +4,19 @@ import 'package:marketdo_admin/widgets/dialogs.dart';
 import 'package:marketdo_admin/widgets/snapshots.dart';
 import 'package:marketdo_admin/firebase.services.dart';
 
-class ProductsTable extends StatefulWidget {
-  // final bool? isApproved;
-  const ProductsTable({/* this.isApproved, */ Key? key}) : super(key: key);
+class Others extends StatefulWidget {
+  const Others({Key? key}) : super(key: key);
 
   @override
-  State<ProductsTable> createState() => _ProductsTableState();
+  State<Others> createState() => _OthersState();
 }
 
-class _ProductsTableState extends State<ProductsTable> {
+class _OthersState extends State<Others> {
   @override
   Widget build(BuildContext context) => StreamBuilder(
       stream: productsCollection
           .orderBy('productName')
-          // .where('isApproved', isEqualTo: widget.isApproved)
+          .where('category', isEqualTo: 'Others')
           .snapshots(),
       builder: (context, ps) {
         if (ps.hasError) {
