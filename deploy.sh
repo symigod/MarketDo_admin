@@ -2,27 +2,15 @@
 
 while true; do
     echo "Please choose an option:"
-    echo "1. BUILD RELEASE"
-    echo "2. DEPLOY TO FIREBASE"
-    echo "3. PUSH TO GITHUB"
+    echo "1. PUSH TO GITHUB"
+    echo "2. BUILD RELEASE"
+    echo "3. DEPLOY TO FIREBASE"
     echo "4. PERFORM ALL OPTIONS (1-3)"
     echo "0. EXIT"
 
     read -p "Enter your choice: " choice
 
     if [ "$choice" = "1" ]; then
-        echo "=================================================="
-        echo "Running flutter build web --release ..."
-        echo "=================================================="
-        flutter build web --release
-
-    elif [ "$choice" = "2" ]; then
-        echo "=================================================="
-        echo "Running firebase deploy ..."
-        echo "=================================================="
-        firebase deploy
-
-    elif [ "$choice" = "3" ]; then
         read -p "Enter commit message: " commit_message
 
         echo "=================================================="
@@ -39,6 +27,18 @@ while true; do
         echo "Running git push -u origin main ..."
         echo "=================================================="
         git push -u origin main
+
+    elif [ "$choice" = "2" ]; then
+        echo "=================================================="
+        echo "Running flutter build web --release ..."
+        echo "=================================================="
+        flutter build web --release
+
+    elif [ "$choice" = "3" ]; then
+        echo "=================================================="
+        echo "Running firebase deploy ..."
+        echo "=================================================="
+        firebase deploy
 
     elif [ "$choice" = "4" ]; then
         echo "=================================================="
