@@ -387,7 +387,7 @@ class _VendorOrdersState extends State<VendorOrders> {
                                         leading: const Icon(Icons.date_range),
                                         title: const Text('Delivery Fee:'),
                                         trailing: Text(
-                                            'P ${numberToString(order['shippingFee'].toDouble())}',
+                                            'P ${numberToString(order['deliveryFee'].toDouble())}',
                                             style: const TextStyle(
                                                 color: Colors.red,
                                                 fontWeight: FontWeight.bold))),

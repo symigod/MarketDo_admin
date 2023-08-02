@@ -32,7 +32,9 @@ Widget successDialog(BuildContext context, String message) =>
 String generateToken() => String.fromCharCodes(
     List.generate(100, (index) => Random().nextInt(33) + 89));
 
-String numberToString(double number) => NumberFormat('#,###.00').format(number);
+String numberToString(double number) => number < 1
+    ? NumberFormat('0.00').format(number)
+    : NumberFormat('#,###.00').format(number);
 
 String dateTimeToString(Timestamp timestamp) =>
     DateFormat('MMM dd, yyyy').format(timestamp.toDate()).toString();
