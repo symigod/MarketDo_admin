@@ -43,7 +43,7 @@ class _HouseholdItemsState extends State<HouseholdItems> {
               DataCell(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(data['productName'], softWrap: true))),
-              DataCell(Text(data['category'], softWrap: true)),
+              DataCell(Text(data['subcategory'], softWrap: true)),
               // DataCell(Text(data['description'], softWrap: true)),
               DataCell(Text(
                   'P ${numberToString(data['regularPrice'].toDouble())} per ${data['unit']}',
