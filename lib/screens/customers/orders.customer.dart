@@ -272,19 +272,15 @@ class _CustomerOrdersState extends State<CustomerOrders> {
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SizedBox(
-                                        height: 64,
-                                        child: ListTile(
-                                            leading:
-                                                const Icon(Icons.date_range),
-                                            title: const Text('Ordered on:'),
-                                            trailing: Text(
-                                                dateTimeToString(
-                                                    order['orderedOn']),
-                                                style: const TextStyle(
-                                                    color: Colors.blue,
-                                                    fontWeight:
-                                                        FontWeight.bold)))),
+                                    ListTile(
+                                        leading: const Icon(Icons.date_range),
+                                        title: const Text('Ordered on:'),
+                                        trailing: Text(
+                                            dateTimeToString(
+                                                order['orderedOn']),
+                                            style: const TextStyle(
+                                                color: Colors.blue,
+                                                fontWeight: FontWeight.bold))),
                                     StreamBuilder(
                                         stream: Stream.fromFuture(Future.wait(
                                             products.map((productId) =>
@@ -380,17 +376,22 @@ class _CustomerOrdersState extends State<CustomerOrders> {
                                                     })
                                               ]);
                                         }),
-                                    SizedBox(
-                                        height: 64,
-                                        child: ListTile(
-                                            leading: const Icon(Icons.payments),
-                                            title: const Text('Total Payment:'),
-                                            trailing: Text(
-                                                'P ${numberToString(order['totalPayment'].toDouble())}',
-                                                style: const TextStyle(
-                                                    color: Colors.red,
-                                                    fontWeight:
-                                                        FontWeight.bold))))
+                                    ListTile(
+                                        leading: const Icon(Icons.date_range),
+                                        title: const Text('Delivery Fee:'),
+                                        trailing: Text(
+                                            'P ${numberToString(order['deliveryFee'].toDouble())}',
+                                            style: const TextStyle(
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.bold))),
+                                    ListTile(
+                                        leading: const Icon(Icons.payments),
+                                        title: const Text('Total Payment:'),
+                                        trailing: Text(
+                                            'P ${numberToString(order['totalPayment'].toDouble())}',
+                                            style: const TextStyle(
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.bold)))
                                   ])));
                     }
                     return emptyWidget('ORDER NOT FOUND');
