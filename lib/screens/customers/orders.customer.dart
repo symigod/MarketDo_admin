@@ -21,7 +21,7 @@ class _CustomerOrdersState extends State<CustomerOrders> {
           child: StreamBuilder(
               stream: ordersCollection
                   .where('customerID', isEqualTo: widget.customerID)
-                  .where('isDelivered', isEqualTo: false)
+                  .where('isDelivered', isEqualTo: true)
                   .orderBy('orderedOn', descending: true)
                   .snapshots(),
               builder: (context, os) {
@@ -377,7 +377,8 @@ class _CustomerOrdersState extends State<CustomerOrders> {
                                               ]);
                                         }),
                                     ListTile(
-                                        leading: const Icon(Icons.date_range),
+                                        leading:
+                                            const Icon(Icons.delivery_dining),
                                         title: const Text('Delivery Fee:'),
                                         trailing: Text(
                                             'P ${numberToString(order['deliveryFee'].toDouble())}',

@@ -21,7 +21,7 @@ class _VendorOrdersState extends State<VendorOrders> {
           child: StreamBuilder(
               stream: ordersCollection
                   .where('vendorID', isEqualTo: widget.vendorID)
-                  .where('isDelivered', isEqualTo: false)
+                  .where('isDelivered', isEqualTo: true)
                   .orderBy('orderedOn', descending: true)
                   .snapshots(),
               builder: (context, os) {
