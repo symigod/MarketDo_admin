@@ -192,10 +192,9 @@ class _CustomerOrdersState extends State<CustomerOrders> {
                     content: SizedBox(
                         width: MediaQuery.of(context).size.width / 3,
                         child: const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: Text('NO ORDERS YET',
-                              textAlign: TextAlign.center),
-                        )));
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: Text('NO ORDERS YET',
+                                textAlign: TextAlign.center))));
               })));
 
   viewOrderDetails(String orderID, String vendorID) => showDialog(

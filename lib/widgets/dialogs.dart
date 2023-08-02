@@ -74,3 +74,6 @@ FaIcon categoryIcon(category) {
   }
   return FaIcon(category);
 }
+
+DataColumn dataColumn(String label) => DataColumn(
+    label: Expanded(child: Text(label, textAlign: TextAlign.center)));

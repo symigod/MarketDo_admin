@@ -187,15 +187,12 @@ class _CustomerListState extends State<CustomerList> {
                 color: Colors.white,
                 fontFamily: 'Lato',
                 fontWeight: FontWeight.bold),
-            columns: const [
-              DataColumn(label: Text('IMAGE', textAlign: TextAlign.center)),
-              DataColumn(label: Text('NAME')),
-              DataColumn(label: Text('CONTACTS')),
-              DataColumn(label: Text('ADDRESS')),
-              DataColumn(label: Text('ACTIONS'))
-              // DataColumn(
-              //     label: Center(
-              //         child: Text('STATUS', textAlign: TextAlign.center)))
+            columns: [
+              dataColumn('LOGO'),
+              dataColumn('NAME'),
+              dataColumn('CONTACTS'),
+              dataColumn('ADDRESS'),
+              dataColumn('ACTIONS')
             ],
             rows: rows);
       });

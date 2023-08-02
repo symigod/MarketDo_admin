@@ -43,12 +43,24 @@ class _ProductScreenState extends State<ProductScreen>
                       indicatorColor: Colors.yellow,
                       indicatorWeight: 3,
                       tabs: const [
-                        Tab(icon: FaIcon(FontAwesomeIcons.shirt)),
-                        Tab(icon: FaIcon(FontAwesomeIcons.utensils)),
-                        Tab(icon: FaIcon(FontAwesomeIcons.couch)),
-                        Tab(icon: FaIcon(FontAwesomeIcons.handSparkles)),
-                        Tab(icon: FaIcon(FontAwesomeIcons.folderOpen)),
-                        Tab(icon: FaIcon(FontAwesomeIcons.ellipsis))
+                        Tab(
+                            text: 'Clothing & Accessories',
+                            icon: FaIcon(FontAwesomeIcons.shirt)),
+                        Tab(
+                            text: 'Food & Beverages',
+                            icon: FaIcon(FontAwesomeIcons.utensils)),
+                        Tab(
+                            text: 'Household Items',
+                            icon: FaIcon(FontAwesomeIcons.couch)),
+                        Tab(
+                            text: 'Personal Care',
+                            icon: FaIcon(FontAwesomeIcons.handSparkles)),
+                        Tab(
+                            text: 'School & Office Supplies',
+                            icon: FaIcon(FontAwesomeIcons.folderOpen)),
+                        Tab(
+                            text: 'Others',
+                            icon: FaIcon(FontAwesomeIcons.ellipsis))
                       ])),
               Expanded(
                   child: TabBarView(controller: tabController, children: const [

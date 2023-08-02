@@ -26,7 +26,6 @@ class _VendorOrdersState extends State<VendorOrders> {
                   .snapshots(),
               builder: (context, os) {
                 if (os.hasError) {
-               
                   return errorWidget(os.error.toString());
                 }
                 if (os.connectionState == ConnectionState.waiting) {
@@ -150,7 +149,51 @@ class _VendorOrdersState extends State<VendorOrders> {
                                     });
                               })));
                 }
-                return emptyWidget('VENDOR NOT FOUND');
+                return AlertDialog(
+                    scrollable: true,
+                    titlePadding: EdgeInsets.zero,
+                    title: StreamBuilder(
+                        stream: vendorsCollection
+                            .where('vendorID', isEqualTo: widget.vendorID)
+                            .snapshots(),
+                        builder: (context, vs) {
+                          if (vs.hasError) {
+                            return errorWidget(vs.error.toString());
+                          }
+                          if (vs.connectionState == ConnectionState.waiting) {
+                            return loadingWidget();
+                          }
+                          if (vs.data!.docs.isNotEmpty) {
+                            return Card(
+                                color: Colors.green,
+                                margin: EdgeInsets.zero,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(5),
+                                        topRight: Radius.circular(5))),
+                                child: ListTile(
+                                  title: Text(
+                                      'Orders of: ${vs.data!.docs[0]['businessName']}',
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold)),
+                                  trailing: InkWell(
+                                      onTap: () => Navigator.of(context).pop(),
+                                      child: const Icon(Icons.close,
+                                          color: Colors.white)),
+                                ));
+                          } else {
+                            return emptyWidget('VENDOR NOT FOUND');
+                          }
+                        }),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                    content: SizedBox(
+                        width: MediaQuery.of(context).size.width / 3,
+                        child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: Text('NO ORDERS YET',
+                                textAlign: TextAlign.center))));
               })));
 
   viewOrderDetails(String orderID, String customerID) => showDialog(

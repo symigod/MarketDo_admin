@@ -49,21 +49,18 @@ class _ClothingAndAccessoriesState extends State<ClothingAndAccessories> {
               DataCell(Text(
                   'P ${numberToString(data['regularPrice'].toDouble())} per ${data['unit']}',
                   softWrap: true)),
-              DataCell(Text(
-                  'P ${numberToString(data['shippingCharge'].toDouble())}',
-                  softWrap: true)),
               DataCell(Center(
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.teal)),
-                    onPressed: () => showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (_) =>
-                            ProductDetails(productID: data['productID'])),
-                    child: const Icon(Icons.visibility, color: Colors.white)),
-              ))
+                  child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.teal)),
+                      onPressed: () => showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) =>
+                              ProductDetails(productID: data['productID'])),
+                      child:
+                          const Icon(Icons.visibility, color: Colors.white))))
             ]);
           }).toList();
           return DataTable(
@@ -74,19 +71,15 @@ class _ClothingAndAccessoriesState extends State<ClothingAndAccessories> {
                   color: Colors.white,
                   fontFamily: 'Lato',
                   fontWeight: FontWeight.bold),
+              rows: rows,
               columns: [
                 dataColumn('IMAGE'),
                 dataColumn('PRODUCT'),
                 dataColumn('SUBCATEGORY'),
                 dataColumn('PRICE'),
-                dataColumn('DELIVERY FEE'),
                 dataColumn('ACTION')
-              ],
-              rows: rows);
+              ]);
         }
         return emptyWidget('NO RECORD FOUND');
       });
-
-  DataColumn dataColumn(String label) => DataColumn(
-      label: Expanded(child: Text(label, textAlign: TextAlign.center)));
 }

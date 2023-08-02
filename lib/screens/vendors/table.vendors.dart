@@ -124,12 +124,12 @@ class _VendorsTableState extends State<VendorsTable> {
                   color: Colors.white,
                   fontFamily: 'Lato',
                   fontWeight: FontWeight.bold),
-              columns: const [
-                DataColumn(label: Text('LOGO')),
-                DataColumn(label: Text('NAME')),
-                DataColumn(label: Text('CONTACTS')),
-                DataColumn(label: Text('ADDRESS')),
-                DataColumn(label: Text('ACTIONS'))
+              columns: [
+                dataColumn('LOGO'),
+                dataColumn('NAME'),
+                dataColumn('CONTACTS'),
+                dataColumn('ADDRESS'),
+                dataColumn('ACTIONS')
               ],
               rows: rows);
         }

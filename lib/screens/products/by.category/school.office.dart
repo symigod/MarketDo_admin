@@ -30,15 +30,17 @@ class _SchoolAndOfficeSuppliesState extends State<SchoolAndOfficeSupplies> {
           final List<DataRow> rows = ps.data!.docs.map((document) {
             final Map<String, dynamic> data = document.data();
             return DataRow(cells: [
-              DataCell(Wrap(children: [
-                SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child:
-                            Image.network(data['imageURL'], fit: BoxFit.cover)))
-              ])),
+              DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Wrap(children: [
+                    SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: Image.network(data['imageURL'],
+                                fit: BoxFit.cover)))
+                  ]))),
               DataCell(Align(
                   alignment: Alignment.centerLeft,
                   child: Text(data['productName'], softWrap: true))),
@@ -124,16 +126,14 @@ class _SchoolAndOfficeSuppliesState extends State<SchoolAndOfficeSupplies> {
                   color: Colors.white,
                   fontFamily: 'Lato',
                   fontWeight: FontWeight.bold),
-              columns: const [
-                DataColumn(label: Text('IMAGE')),
-                DataColumn(label: Text('PRODUCT')),
-                DataColumn(label: Text('CATEGORY')),
-                // DataColumn(label: Text('DESCRIPTION')),
-                DataColumn(label: Text('PRICE')),
-                // DataColumn(label: Text('VENDOR')),
-                DataColumn(label: Text('ACTION'))
-              ],
-              rows: rows);
+              rows: rows,
+              columns: [
+                dataColumn('IMAGE'),
+                dataColumn('PRODUCT'),
+                dataColumn('SUBCATEGORY'),
+                dataColumn('PRICE'),
+                dataColumn('ACTION')
+              ]);
         }
         return emptyWidget('NO RECORD FOUND');
       });
