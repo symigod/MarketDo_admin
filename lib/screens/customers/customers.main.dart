@@ -231,8 +231,10 @@ class _CustomerListState extends State<CustomerList> {
                                           fontWeight: FontWeight.bold)),
                                   trailing: InkWell(
                                       onTap: () => Navigator.pop(context),
-                                      child: const Icon(Icons.close,
-                                          color: Colors.white)))),
+                                      child: const Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Icon(Icons.close,
+                                              color: Colors.white))))),
                           contentPadding: EdgeInsets.zero,
                           content: SizedBox(
                               width: MediaQuery.of(context).size.width / 3,

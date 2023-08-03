@@ -50,17 +50,18 @@ class _VendorProductsState extends State<VendorProducts> {
                                   topLeft: Radius.circular(5),
                                   topRight: Radius.circular(5))),
                           child: ListTile(
-                            title: Text(
-                                'Products of: ${vs.data!.docs[0]['businessName']}',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold)),
-                            trailing: InkWell(
-                                onTap: () => Navigator.of(context).pop(),
-                                child: const Icon(Icons.close,
-                                    color: Colors.white)),
-                          ));
+                              title: Text(
+                                  'Products of: ${vs.data!.docs[0]['businessName']}',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                              trailing: InkWell(
+                                  onTap: () => Navigator.of(context).pop(),
+                                  child: const Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: Icon(Icons.close,
+                                          color: Colors.white)))));
                     } else {
                       return emptyWidget('VENDOR NOT FOUND');
                     }

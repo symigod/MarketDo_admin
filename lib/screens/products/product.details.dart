@@ -43,16 +43,17 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   topLeft: Radius.circular(5),
                                   topRight: Radius.circular(5))),
                           child: ListTile(
-                            title: const Text('Product Details',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold)),
-                            trailing: InkWell(
-                                onTap: () => Navigator.of(context).pop(),
-                                child: const Icon(Icons.close,
-                                    color: Colors.white)),
-                          )),
+                              title: const Text('Product Details',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                              trailing: InkWell(
+                                  onTap: () => Navigator.of(context).pop(),
+                                  child: const Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: Icon(Icons.close,
+                                          color: Colors.white))))),
                       contentPadding: EdgeInsets.zero,
                       content: SizedBox(
                           width: MediaQuery.of(context).size.width / 3,
@@ -208,8 +209,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   fontWeight: FontWeight.bold)),
                           trailing: InkWell(
                               onTap: () => Navigator.of(context).pop(),
-                              child: const Icon(Icons.close,
-                                  color: Colors.white)))),
+                              child: const Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Icon(Icons.close,
+                                      color: Colors.white))))),
                   contentPadding: EdgeInsets.zero,
                   content: SizedBox(
                       width: MediaQuery.of(context).size.width / 3,

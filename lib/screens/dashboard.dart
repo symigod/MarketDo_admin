@@ -73,87 +73,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           spacing: 10,
           runSpacing: 10,
           children: [
-            // SALES REPORT
-            Card(
-                elevation: 10,
-                shadowColor: Colors.green.shade900,
-                shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 2, color: Colors.green.shade900),
-                    borderRadius: BorderRadius.circular(5)),
-                child: StreamBuilder(
-                    stream: ordersCollection.snapshots(),
-                    builder: (context, os) {
-                      if (os.hasError) {
-                        return const Text('Something went wrong');
-                      }
-                      if (os.connectionState == ConnectionState.waiting) {
-                        return loadingWidget();
-                      }
-                      if (os.hasData) {
-                        final orders = os.data!.docs;
-                        Map<String, int> vendorCountMap = {};
-                        return StreamBuilder(
-                            stream: vendorsCollection.snapshots(),
-                            builder: (context, vs) {
-                              if (vs.hasError) {
-                                return const Text('Something went wrong');
-                              }
-                              if (vs.connectionState ==
-                                  ConnectionState.waiting) {
-                                return loadingWidget();
-                              }
-                              if (vs.hasData) {
-                                final vendors = vs.data!.docs;
-                                Map<String, String> vendorNameMap = {};
-                                for (var vendor in vendors) {
-                                  final vendorName =
-                                      vendor['vendorID'] as String;
-                                  final businessName =
-                                      vendor['businessName'] as String;
-                                  vendorNameMap[vendorName] = businessName;
-                                }
-                                for (var order in orders) {
-                                  final vendorName =
-                                      order['vendorID'] as String;
-                                  vendorCountMap[vendorName] =
-                                      (vendorCountMap[vendorName] ?? 0) + 1;
-                                }
-                                List<VendorData> vendorDataList = [];
-                                for (var entry in vendorCountMap.entries) {
-                                  final vendorName =
-                                      vendorNameMap[entry.key] ?? 'Unknown';
-                                  vendorDataList
-                                      .add(VendorData(vendorName, entry.value));
-                                }
-                                return SfCartesianChart(
-                                    title: ChartTitle(
-                                        text: 'SALES REPORT',
-                                        textStyle: const TextStyle(
-                                            fontFamily: 'Lato',
-                                            fontWeight: FontWeight.bold)),
-                                    primaryXAxis: CategoryAxis(),
-                                    primaryYAxis: NumericAxis(),
-                                    tooltipBehavior: TooltipBehavior(
-                                        enable: true,
-                                        textStyle:
-                                            const TextStyle(fontFamily: 'Lato'),
-                                        header: '',
-                                        format: 'point.x\npoint.y orders sold'),
-                                    series: <BarSeries<VendorData, String>>[
-                                      BarSeries<VendorData, String>(
-                                          color: Colors.green.shade900,
-                                          dataSource: vendorDataList,
-                                          xValueMapper: (VendorData data, _) =>
-                                              data.vendorName,
-                                          yValueMapper: (VendorData data, _) =>
-                                              data.orderCount)
-                                    ]);
-                              }
-                              return loadingWidget();
-                            });
-                      }
-                      return loadingWidget();
-                    })),
             // REGISTERED USERS
             StreamBuilder(
                 stream: _customerVendorDataStreamController.stream,
@@ -271,7 +190,88 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 ])));
                   }
                   return const SizedBox.shrink();
-                })
+                }),
+            // SALES REPORT
+            Card(
+                elevation: 10,
+                shadowColor: Colors.green.shade900,
+                shape: RoundedRectangleBorder(
+                    side: BorderSide(width: 2, color: Colors.green.shade900),
+                    borderRadius: BorderRadius.circular(5)),
+                child: StreamBuilder(
+                    stream: ordersCollection.snapshots(),
+                    builder: (context, os) {
+                      if (os.hasError) {
+                        return const Text('Something went wrong');
+                      }
+                      if (os.connectionState == ConnectionState.waiting) {
+                        return loadingWidget();
+                      }
+                      if (os.hasData) {
+                        final orders = os.data!.docs;
+                        Map<String, int> vendorCountMap = {};
+                        return StreamBuilder(
+                            stream: vendorsCollection.snapshots(),
+                            builder: (context, vs) {
+                              if (vs.hasError) {
+                                return const Text('Something went wrong');
+                              }
+                              if (vs.connectionState ==
+                                  ConnectionState.waiting) {
+                                return loadingWidget();
+                              }
+                              if (vs.hasData) {
+                                final vendors = vs.data!.docs;
+                                Map<String, String> vendorNameMap = {};
+                                for (var vendor in vendors) {
+                                  final vendorName =
+                                      vendor['vendorID'] as String;
+                                  final businessName =
+                                      vendor['businessName'] as String;
+                                  vendorNameMap[vendorName] = businessName;
+                                }
+                                for (var order in orders) {
+                                  final vendorName =
+                                      order['vendorID'] as String;
+                                  vendorCountMap[vendorName] =
+                                      (vendorCountMap[vendorName] ?? 0) + 1;
+                                }
+                                List<VendorData> vendorDataList = [];
+                                for (var entry in vendorCountMap.entries) {
+                                  final vendorName =
+                                      vendorNameMap[entry.key] ?? 'Unknown';
+                                  vendorDataList
+                                      .add(VendorData(vendorName, entry.value));
+                                }
+                                return SfCartesianChart(
+                                    title: ChartTitle(
+                                        text: 'SALES REPORT',
+                                        textStyle: const TextStyle(
+                                            fontFamily: 'Lato',
+                                            fontWeight: FontWeight.bold)),
+                                    primaryXAxis: CategoryAxis(),
+                                    primaryYAxis: NumericAxis(),
+                                    tooltipBehavior: TooltipBehavior(
+                                        enable: true,
+                                        textStyle:
+                                            const TextStyle(fontFamily: 'Lato'),
+                                        header: '',
+                                        format: 'point.x\npoint.y orders sold'),
+                                    series: <BarSeries<VendorData, String>>[
+                                      BarSeries<VendorData, String>(
+                                          color: Colors.green.shade900,
+                                          dataSource: vendorDataList,
+                                          xValueMapper: (VendorData data, _) =>
+                                              data.vendorName,
+                                          yValueMapper: (VendorData data, _) =>
+                                              data.orderCount)
+                                    ]);
+                              }
+                              return loadingWidget();
+                            });
+                      }
+                      return loadingWidget();
+                    }))
           ]));
 
   Widget analyticWidget({required String title, required String value}) =>

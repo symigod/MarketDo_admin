@@ -132,12 +132,9 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
                                     trailing: IconButton(
                                         icon: Icon(Icons.close,
                                             color: Colors.red.shade900),
-                                        onPressed: () {
-                                          setState(() {
+                                        onPressed: () => setState(() =>
                                             _formData.subcategories
-                                                .removeAt(entry.key);
-                                          });
-                                        })))
+                                                .removeAt(entry.key)))))
                                 .toList()),
                         const SizedBox(height: 5),
                         TextFormField(

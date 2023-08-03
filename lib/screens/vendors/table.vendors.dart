@@ -79,7 +79,7 @@ class _VendorsTableState extends State<VendorsTable> {
                             style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.red.shade900)),
-                            child: const Icon(Icons.close, color: Colors.white),
+                            child: const Padding(padding: EdgeInsets.all(10), child: Icon(Icons.close, color: Colors.white)),
                             onPressed: () => vendorsCollection.doc(data['vendorID']).update({'isApproved': true}).then((_) => Fluttertoast.showToast(msg: '${data['businessName']} ${data['isApproved'] == true ? 'unapproved!' : 'approved!'}', webBgColor: '${data['isApproved'] == true ? 'rgb(183, 28, 28)' : 'rgb(27, 94, 32)'} ', webPosition: 'center'))),
                     const SizedBox(width: 10),
                     ElevatedButton(
@@ -169,8 +169,10 @@ class _VendorsTableState extends State<VendorsTable> {
                                   fontWeight: FontWeight.bold)),
                           trailing: InkWell(
                               onTap: () => Navigator.of(context).pop(),
-                              child: const Icon(Icons.close,
-                                  color: Colors.white)))),
+                              child: const Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Icon(Icons.close,
+                                      color: Colors.white))))),
                   contentPadding: EdgeInsets.zero,
                   content: SizedBox(
                       width: MediaQuery.of(context).size.width / 3,

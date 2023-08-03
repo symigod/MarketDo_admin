@@ -55,18 +55,19 @@ class _VendorOrdersState extends State<VendorOrders> {
                                           topLeft: Radius.circular(5),
                                           topRight: Radius.circular(5))),
                                   child: ListTile(
-                                    title: Text(
-                                        'Orders sold by: ${vs.data!.docs[0]['businessName']}',
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold)),
-                                    trailing: InkWell(
-                                        onTap: () =>
-                                            Navigator.of(context).pop(),
-                                        child: const Icon(Icons.close,
-                                            color: Colors.white)),
-                                  ));
+                                      title: Text(
+                                          'Orders sold by: ${vs.data!.docs[0]['businessName']}',
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold)),
+                                      trailing: InkWell(
+                                          onTap: () =>
+                                              Navigator.of(context).pop(),
+                                          child: const Padding(
+                                              padding: EdgeInsets.all(10),
+                                              child: Icon(Icons.close,
+                                                  color: Colors.white)))));
                             } else {
                               return emptyWidget('VENDOR NOT FOUND');
                             }
@@ -172,17 +173,19 @@ class _VendorOrdersState extends State<VendorOrders> {
                                         topLeft: Radius.circular(5),
                                         topRight: Radius.circular(5))),
                                 child: ListTile(
-                                  title: Text(
-                                      'Orders of: ${vs.data!.docs[0]['businessName']}',
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold)),
-                                  trailing: InkWell(
-                                      onTap: () => Navigator.of(context).pop(),
-                                      child: const Icon(Icons.close,
-                                          color: Colors.white)),
-                                ));
+                                    title: Text(
+                                        'Orders of: ${vs.data!.docs[0]['businessName']}',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold)),
+                                    trailing: InkWell(
+                                        onTap: () =>
+                                            Navigator.of(context).pop(),
+                                        child: const Padding(
+                                            padding: EdgeInsets.all(10),
+                                            child: Icon(Icons.close,
+                                                color: Colors.white)))));
                           } else {
                             return emptyWidget('VENDOR NOT FOUND');
                           }
@@ -262,7 +265,7 @@ class _VendorOrdersState extends State<VendorOrders> {
                                                           width: 2)),
                                                   child: ClipRRect(borderRadius: BorderRadius.circular(50), child: CachedNetworkImage(imageUrl: customer['logo'], fit: BoxFit.cover)))),
                                           title: Text(customer['name'], style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                                          trailing: InkWell(onTap: () => Navigator.pop(context), child: const Icon(Icons.close, color: Colors.white))));
+                                          trailing: InkWell(onTap: () => Navigator.pop(context), child: const Padding(padding: EdgeInsets.all(10), child: Icon(Icons.close, color: Colors.white)))));
                                 }
                                 return emptyWidget('CUSTOMER NOT FOUND');
                               }),
@@ -384,8 +387,14 @@ class _VendorOrdersState extends State<VendorOrders> {
                                               ]);
                                         }),
                                     ListTile(
-                                        leading: const Icon(Icons.date_range),
-                                        title: const Text('Delivery Fee:'),
+                                        leading:
+                                            const Icon(Icons.delivery_dining),
+                                        title: const Text('Delivery:'),
+                                        subtitle: Text(
+                                            order['deliveryMethod'] ==
+                                                    'DELIVERY'
+                                                ? 'Home Delivery'
+                                                : 'Pick-up'),
                                         trailing: Text(
                                             'P ${numberToString(order['deliveryFee'].toDouble())}',
                                             style: const TextStyle(
@@ -393,7 +402,9 @@ class _VendorOrdersState extends State<VendorOrders> {
                                                 fontWeight: FontWeight.bold))),
                                     ListTile(
                                         leading: const Icon(Icons.payments),
-                                        title: const Text('Total Payment:'),
+                                        title: const Text('Payment:'),
+                                        subtitle: Text(
+                                            '${order['paymentMethod'] == 'COD' ? 'Cash on Delivery' : order['paymentMethod']}'),
                                         trailing: Text(
                                             'P ${numberToString(order['totalPayment'].toDouble())}',
                                             style: const TextStyle(
@@ -438,8 +449,10 @@ class _VendorOrdersState extends State<VendorOrders> {
                                           fontWeight: FontWeight.bold)),
                                   trailing: InkWell(
                                       onTap: () => Navigator.pop(context),
-                                      child: const Icon(Icons.close,
-                                          color: Colors.white)))),
+                                      child: const Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Icon(Icons.close,
+                                              color: Colors.white))))),
                           contentPadding: EdgeInsets.zero,
                           content: SizedBox(
                               width: MediaQuery.of(context).size.width / 3,
