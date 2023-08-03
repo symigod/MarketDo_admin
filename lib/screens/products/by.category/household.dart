@@ -44,77 +44,21 @@ class _HouseholdItemsState extends State<HouseholdItems> {
                   alignment: Alignment.centerLeft,
                   child: Text(data['productName'], softWrap: true))),
               DataCell(Text(data['subcategory'], softWrap: true)),
-              // DataCell(Text(data['description'], softWrap: true)),
               DataCell(Text(
                   'P ${numberToString(data['regularPrice'].toDouble())} per ${data['unit']}',
                   softWrap: true)),
-              // DataCell(FutureBuilder(
-              //     future: vendorsCollection
-              //         .where('vendorID', isEqualTo: data['vendorID'])
-              //         .get(),
-              //     builder: (context, vs) {
-              //       if (vs.hasError) {
-              //         return errorWidget(vs.error.toString());
-              //       }
-              //       if (vs.connectionState == ConnectionState.waiting) {
-              //         return loadingWidget();
-              //       }
-              //       if (vs.hasData) {
-              //         return Text(vs.data!.docs[0]['businessName'],
-              //             softWrap: true);
-              //       }
-              //       return emptyWidget('VENDOR NOT FOUND');
-              //     })),
-              DataCell(ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.teal)),
-                  onPressed: () => showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (_) =>
-                          ProductDetails(productID: data['productID'])),
-                  child: const Icon(Icons.visibility, color: Colors.white)))
-              // DataCell(data['isApproved'] == true
-              //     ? ElevatedButton(
-              //         style: ButtonStyle(
-              //             backgroundColor:
-              //                 MaterialStateProperty.all(Colors.green.shade900)),
-              //         child: const FittedBox(
-              //             child: Text('APPROVED',
-              //                 style: TextStyle(color: Colors.white))),
-              //         onPressed: () {
-              // productsCollection
-              //               .doc(data['productID'])
-              //               .update({
-              //             'isApproved': false
-              //           }).then((_) => Fluttertoast.showToast(
-              //                   msg:
-              //                       'Product ${data['isApproved'] == true ? 'unapproved!' : 'approved!'}',
-              //                   timeInSecForIosWeb: 3,
-              //                   webBgColor:
-              //                       '${data['isApproved'] == true ? 'rgb(183, 28, 28)' : 'rgb(27, 94, 32)'} ',
-              //                   webPosition: 'center'));
-              //         })
-              //     : ElevatedButton(
-              //         style: ButtonStyle(
-              //             backgroundColor:
-              //                 MaterialStateProperty.all(Colors.red.shade900)),
-              //         child: const FittedBox(
-              //             child: Text('UNAPPROVED',
-              //                 style: TextStyle(color: Colors.white))),
-              //         onPressed: () {
-              //  productsCollection
-              //               .doc(data['productID'])
-              //               .update({
-              //             'isApproved': true
-              //           }).then((_) => Fluttertoast.showToast(
-              //                   msg:
-              //                       'Product ${data['isApproved'] == true ? 'unapproved!' : 'approved!'}',
-              //                   timeInSecForIosWeb: 3,
-              //                   webBgColor:
-              //                       '${data['isApproved'] == true ? 'rgb(183, 28, 28)' : 'rgb(27, 94, 32)'} ',
-              //                   webPosition: 'center'));
-              //         })),
+              DataCell(Center(
+                  child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.teal)),
+                      onPressed: () => showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) =>
+                              ProductDetails(productID: data['productID'])),
+                      child:
+                          const Icon(Icons.visibility, color: Colors.white))))
             ]);
           }).toList();
           return DataTable(
